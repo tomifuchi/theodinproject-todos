@@ -33,11 +33,16 @@
     my todo's revolves around tagging things to categorize things. And ofcourse that's a feature to implement
     later. NOw should be laying foundation that we can do this
 
+    Let's create a working prototype for this to work without display then design the UI and shit later.
+    It can change but the logic will not.
+
+    So
+
     Create a note
     Add a note
     Diplay that note
     Delete that note
     
 */
-
 import * as pubsub from './modules/pubsub.js';
+pubsub.pubsubTest();
