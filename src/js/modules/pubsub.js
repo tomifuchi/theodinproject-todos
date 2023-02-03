@@ -21,7 +21,7 @@ function publish(type, message, args) {
 }
 
 function pubsubTest() {
-    return 'Confirmation from pubsub';
+    return 'Pubsub module import successful';
 }
 
 module.exports = {subscribe, unsubscribe, publish, pubsubTest};

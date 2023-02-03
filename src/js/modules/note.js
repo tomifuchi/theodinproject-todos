@@ -1,7 +1,6 @@
 //Modules
 const pubsub = require('./pubsub');
 const {format} = require('date-fns');
-const _ = require('lodash');
 
 const noteList = [];
 let ID = 0;
@@ -24,6 +23,7 @@ function addNote(note) {
 
 function removeNote(ID) {
     noteList.splice(noteList.indexOf(noteList.filter(note => note.ID == ID)), 1);
+    pubsub.publish('log','removeNote', 'note.js:removeNote invoke')
 }
 
 function editNote(edittedNote){
@@ -42,13 +42,13 @@ function getNoteList(){
 
 function getNote(ID) {
     const obj = noteList.filter(note => note.ID == ID);
-    pubsub.publish('log','getNote', `note.js:editNote invoke!\nIt's object is: ${JSON.stringify(obj)}`); //Unless we learn async, we won't know if the function is sucessfully created or not so this will do for now
+    pubsub.publish('log','getNote', `note.js:getNote this:\n${JSON.stringify(obj)}`); //Unless we learn async, we won't know if the function is sucessfully created or not so this will do for now
     return obj;
 }
 
 //For testing purposes
-function noteTest(){
-    return 'Confirmation from note';
+function noteImportTest(){
+    return 'Note module import successful';
 }
 
 function randomNote() {
@@ -62,4 +62,4 @@ function randomNote() {
     );
 }
 
-module.exports = {createNote, addNote, getNoteList, randomNote, noteTest};
+module.exports = {createNote, addNote, getNoteList, getNote, removeNote, editNote, randomNote, noteImportTest};

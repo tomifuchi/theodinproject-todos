@@ -51,6 +51,3 @@ const pubsub = require('./modules/pubsub');
 const note   = require('./modules/note');
 const display = require('./modules/display');
 
-document.getElementById('create-note').onclick = note.randomNote;
-document.getElementById('add-note').onclick = () => note.addNote(note.randomNote());
-document.getElementById('get-note-list').onclick = note.getNoteList;

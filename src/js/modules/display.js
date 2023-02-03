@@ -18,3 +18,9 @@ function log(msg){
 pubsub.subscribe('display', 'log', 'createNote', log);
 pubsub.subscribe('display', 'log', 'addNote', log);
 pubsub.subscribe('display', 'log', 'getNoteList', log);
+
+function displayImportTest() {
+    return 'Display module import successful';
+}
+
+module.exports = {displayImportTest};
