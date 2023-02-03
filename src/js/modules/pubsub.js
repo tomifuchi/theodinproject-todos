@@ -21,7 +21,7 @@ function publish(type, message, args) {
 }
 
 function pubsubTest() {
-    console.log('Hello from pubsub');
+    return 'Confirmation from pubsub';
 }
 
-export {subscribe, unsubscribe, publish, pubsubTest};
+module.exports = {subscribe, unsubscribe, publish, pubsubTest};
