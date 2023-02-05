@@ -49,5 +49,24 @@ require('../scss/style.scss');
 const {format} = require('date-fns');
 const pubsub = require('./modules/pubsub');
 const note   = require('./modules/note');
+const logger = require('./modules/logger');
 const display = require('./modules/display');
 
+//Html logger
+const htmlLogger = logger.Logger('htmlLogger');
+const boundHtmlLogMethod = (msg) => {
+    htmlLogger.log(msg); 
+    pubsub.publish('log', 'htmlLogger-logs', htmlLogger.getLog());
+};
+pubsub.subscribe('htmlLogger', 'log', 'createNote', boundHtmlLogMethod);
+pubsub.subscribe('htmlLogger', 'log', 'addNote', boundHtmlLogMethod);
+pubsub.subscribe('htmlLogger', 'log', 'getNoteList', boundHtmlLogMethod);
+pubsub.subscribe('htmlLogger', 'log', 'getNote', boundHtmlLogMethod);
+pubsub.subscribe('htmlLogger', 'log', 'removeNote', boundHtmlLogMethod);
+pubsub.subscribe('htmlLogger', 'log', 'editNote', boundHtmlLogMethod);
+
+note.addNote(note.randomNote());
+note.editNote({ID: 0, title: 'What the fuck is going on A side !!!!'});
+note.getNoteList();
+
+console.log(htmlLogger.getLog());
