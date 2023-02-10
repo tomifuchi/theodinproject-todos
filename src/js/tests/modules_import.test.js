@@ -1,6 +1,6 @@
 const pubsub = require('../modules/pubsub');
-const note   = require('../modules/note');
-const logger = require('../modules/logger');
+const note = require('../modules/note');
+const loggerModule = require('../modules/logger');
 
 //Testing imports
 test('Invoke pubsub module confirmation test', () => {
@@ -12,5 +12,5 @@ test('Invoke note module confirmation test', () => {
 });
 
 test('Invoke logger module confirmation test', () => {
-    expect(logger.loggerImportTest()).toBe('Logger module import successful');
+    expect(loggerModule.Logger.loggerImportTest()).toBe('Logger module import successful');
 });

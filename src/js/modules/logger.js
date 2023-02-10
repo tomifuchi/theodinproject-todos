@@ -1,26 +1,21 @@
 const pubsub = require('./pubsub');
 
 function Logger(name) {
-    pubsub.publish('log', 'Logger-created', name);
     let logs = '';
-    const state ={
+    const state = {
         name,
         logCounter: 0,
     };
-    function log(msg) {
-        logs = `${this.logCounter++}: ${msg}\n${logs}`;
-    }
-    function getLog() {
-      	return logs;
-    }
+
     return Object.assign(
-        Object.create({log, getLog}),
+        Object.create({
+            log: function (msg) {return logs = `${this.logCounter++}: ${msg}\n${logs}`},
+            getLog: function () {return logs},
+        }),
         state
     );
 }
 
-function loggerImportTest() {
-    return 'Logger module import successful';
-}
+Logger.loggerImportTest = () => 'Logger module import successful';
 
-module.exports = {Logger, loggerImportTest};
+module.exports = {Logger};

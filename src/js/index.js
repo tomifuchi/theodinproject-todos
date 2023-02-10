@@ -36,13 +36,8 @@
     Let's create a working prototype for this to work without display then design the UI and shit later.
     It can change but the logic will not.
 
-    So
 
-    Create a note
-    Add a note
-    Diplay that note
-    Delete that note
-    
+    Notes and checklist if possible
 */
 require('../scss/style.scss');
 
@@ -54,19 +49,21 @@ const display = require('./modules/display');
 
 //Html logger
 const htmlLogger = logger.Logger('htmlLogger');
-const boundHtmlLogMethod = (msg) => {
+const logToHtml = (msg) => {
     htmlLogger.log(msg); 
     pubsub.publish('log', 'htmlLogger-logs', htmlLogger.getLog());
 };
-pubsub.subscribe('htmlLogger', 'log', 'createNote', boundHtmlLogMethod);
-pubsub.subscribe('htmlLogger', 'log', 'addNote', boundHtmlLogMethod);
-pubsub.subscribe('htmlLogger', 'log', 'getNoteList', boundHtmlLogMethod);
-pubsub.subscribe('htmlLogger', 'log', 'getNote', boundHtmlLogMethod);
-pubsub.subscribe('htmlLogger', 'log', 'removeNote', boundHtmlLogMethod);
-pubsub.subscribe('htmlLogger', 'log', 'editNote', boundHtmlLogMethod);
+//pubsub.subscribe('htmlLogger', 'log', 'createNote', logToHtml);
+//pubsub.subscribe('htmlLogger', 'log', 'addNote', logToHtml);
+pubsub.subscribe('htmlLogger', 'log', 'getNoteList', logToHtml);
+//pubsub.subscribe('htmlLogger', 'log', 'getNote', logToHtml);
+//pubsub.subscribe('htmlLogger', 'log', 'removeNote', logToHtml);
+//pubsub.subscribe('htmlLogger', 'log', 'editNote', logToHtml);
 
-note.addNote(note.randomNote());
-note.editNote({ID: 0, title: 'What the fuck is going on A side !!!!'});
-note.getNoteList();
-
-console.log(htmlLogger.getLog());
+const inbox = note.Project('Inbox');
+inbox.addNote(note.Project.createTestNote());
+inbox.addNote(note.Project.createTestNote());
+inbox.addNote(note.Project.createTestNote());
+inbox.addNote(note.Project.createTestNote());
+inbox.addNote(note.Project.createTestNote());
+inbox.getNoteList();
