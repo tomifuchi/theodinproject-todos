@@ -52,7 +52,7 @@ test('Note removing', () => {
 //Moving notes around projects
 const testProjectB = note.Project('testProjectB');
 const testProjectC = note.Project('testProjectC');
-testNoteB = {...note.Project.createTestNote(), title: 'Something for B'};
+const testNoteB = {...note.Project.createTestNote(), title: 'Something for B'};
 testProjectB.addNote(testNoteB);
 
 const testNoteC = {...note.Project.createTestNote(), title: 'Something for C'};
@@ -66,12 +66,44 @@ test('Moving notes between projects', () => {
 
 //Duplicate notes to projects
 test('Duplicating note from one project to project(s)', () => {
-    testProjectB.duplicateNoteToProj(0, testProjectA, testProjectC);
+    testProjectB.duplicateNote(0, testProjectA, testProjectC);
     expect(testProjectA.getNote(1)).toStrictEqual({...testNoteB, ID: 1});
     expect(testProjectC.getNote(1)).toStrictEqual({...testNoteB, ID: 1});
 });
 
 test('Duplicating note from itself', () => {
-    testProjectB.duplicateNoteToProj(0, testProjectB);
+    testProjectB.duplicateNote(0, testProjectB);
     expect(testProjectB.getNote(2)).toStrictEqual({...testNoteB, ID: 2});
+});
+
+//Tagging system
+//Filtering tag
+test('Filtering note from a Project', () => {
+    testProjectB.editNote({ID: 0, tags: ['UniqueTag']});
+    testProjectB.editNote({ID: 0, tags: ['UniqueTag']});
+    testProjectB.editNote({ID: 1, tags: ['UniqueTag']});
+    expect(testProjectB.filterByTag('UniqueTag')).toStrictEqual([
+        Object.assign({...note.Project.createTestNote(), title: 'Something for B', ID: 0, tags: ['UniqueTag']}),
+        Object.assign({...note.Project.createTestNote(), title: 'Something for C', ID: 1, tags: ['UniqueTag']}),
+    ]);
+});
+
+//Check duplicate tags
+const testProjectD = note.Project('testProjectD');
+testProjectD.addNote({...note.Project.createTestNote(), title: 'Something for D'});
+testProjectD.editNote({ID: 0, tags: ['tag A', 'tag A']});
+
+test('Checking for duplicated tags', () => {
+    expect(testProjectD.checkForTag(0, 'tag A')).toBe(true);
+});
+
+test('Adding duplicate tag', () => {
+    expect(testProjectD.addTag(0, 'tag A')).toBe(undefined);
+});
+
+//Removing tags
+test('Testing for removing the tag', () => {
+    testProjectD.removeTag(0, 'tag A');
+    testProjectD.removeTag(0, 'tag A');
+    expect(testProjectD.checkForTag(0, 'tag A')).toBe(false);
 });

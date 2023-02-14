@@ -7,6 +7,14 @@ function Project(name) {
     const state = {name};
 
     const noteList = [];
+    const tagDataBase = {
+        projects: [],
+        topics: [],
+        checkDuplicates: function (list, newTag) {
+            return this[list].some((tag) => tag == newTag);
+        },
+    };
+
     let ID = 0;
 
     //Creation
@@ -21,8 +29,11 @@ function Project(name) {
 
     function addNote (note) {
         pubsub.publish('log','addNote', `${this.name} project; note.js:addNote invoke`);
-        if(note !== undefined)
-            noteList.push({...note, ID: ID++});
+        if(note !== undefined) {
+            const newNote = {...note, ID: ID++};
+            noteList.push(newNote);
+            _addRequirementTags(newNote.ID);
+        }
     }
 
     //Removing
@@ -62,14 +73,44 @@ function Project(name) {
         this.removeNote(ID);
     }
 
-    function duplicateNoteToProj(ID, ...destProjs) {
+    function duplicateNote(ID, ...destProjs) {
         const note = this.getNote(ID);
         destProjs.forEach((proj) => proj.addNote(note));
     }
+    
+    //Filter note by tag
+    //Tag related operation
+    function filterByTag(searchingTag){
+        return noteList.filter(({tags}) => tags.some((tag) => tag == searchingTag));
+    }
+
+    function _addRequirementTags(ID) {
+        this.addTag(ID, `project:${this.name}`);
+        //this.addTag(ID, `section:${this.name}`); We will see about this
+    }
+
+    function addTag(ID, tag) {
+        if(!this.checkForTag(ID, tag))
+            (this.getNote(ID)).tags.push(tag);
+    }
+
+    function removeTag(ID, tag) {
+        const note = this.getNote(ID);
+        note.tags.splice(note.tags.indexOf(tag),1);
+    }
+
+    //If tag exists
+    function checkForTag(ID, searchingTag){
+        return (this.getNote(ID)).tags.some((tag) => tag == searchingTag);
+    }
 
     return Object.assign(Object.create({
+            //Note operations
             createNote, addNote, removeNote, editNote, getNote, getNoteList,
-            moveNote, duplicateNoteToProj,
+            //Tagging system
+            filterByTag, addTag, checkForTag, removeTag,
+            //Notes and Projects operations
+            moveNote, duplicateNote,
         }),
         state,
     );
