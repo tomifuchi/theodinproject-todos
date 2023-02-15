@@ -32,7 +32,8 @@ function Project(name) {
         if(note !== undefined) {
             const newNote = {...note, ID: ID++};
             noteList.push(newNote);
-            _addRequirementTags(newNote.ID);
+            //_addRequirementTags(newNote.ID);
+            //this.addTag(newNote.ID, `project:${this.name}`);
         }
     }
 
@@ -86,7 +87,6 @@ function Project(name) {
 
     function _addRequirementTags(ID) {
         this.addTag(ID, `project:${this.name}`);
-        //this.addTag(ID, `section:${this.name}`); We will see about this
     }
 
     function addTag(ID, tag) {
