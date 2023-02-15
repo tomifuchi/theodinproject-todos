@@ -19,6 +19,8 @@ module.exports = {
      ], 
     } ,
     watchOptions: {
-        ignored: /node_modules/
+        //While developing use this to ignore the all other folders beside
+        //the ones you are working with
+        ignored: ['**/node_modules', '*.js'],
     },
 }
