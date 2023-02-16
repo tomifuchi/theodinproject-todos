@@ -18,57 +18,30 @@ const TagListProto = {
     addTag: function(...tags) {
         tags.forEach((tag) => {if (!this.checkForTag(tag)) this._tagList.push(tag)})
     },
-    removetag: function (removingTag) {
-        if(this.checkForTag(removingTag))
-            this._tagList.splice(this._tagList.indexOf(removingTag), 1);
+    removeTag: function (removingTag) {
+      if(this.checkForTag(removingTag))
+          this._tagList.splice(this._tagList.findIndex((tag) => this.checkEqual(tag, removingTag)), 1);
     },
-    checkForTag : function (checkingTag){
-        return this._tagList.some((tag) => tag == checkingTag);
+    checkForTag: function (checkingTag){
+        return this._tagList.some((tag) => this.checkEqual(tag, checkingTag));
+    },
+    checkEqual: function (tagA, tagB) {
+        return JSON.stringify(tagA) === JSON.stringify(tagB);
+    },
+    getTagList: function () {
+        return JSON.parse(JSON.stringify(this._tagList));
     }
 }
 
 function createTagList(name) {
     const state = {name, _tagList: []};
 
-    function addTag(tag) {
-
-    }
-
-    function removeTag() {
-
-    }
-
-    return 
+    return Object.assign(
+        Object.create(TagListProto),
+        state
+    );
 }
 
-//const TagListProto = {
-//    function _addRequirementTags(ID) {
-//        this.addTag(ID, `project:${this.name}`);
-//    }
-//
-//    function addTag(ID, tag) {
-//        if(!this.checkForTag(ID, tag))
-//            (this.getNote(ID)).tags.push(tag);
-//    }
-//
-//    function removeTag(ID, tag) {
-//        const note = this.getNote(ID);
-//        note.tags.splice(note.tags.indexOf(tag),1);
-//    }
-//
-//    //If tag exists
-//    function checkForTag(ID, searchingTag){
-//        return (this.getNote(ID)).tags.some((tag) => tag == searchingTag);
-//    }
-//
-//
-//}
-//
-//function TagList() {
-//
-//
-//}
-//
 //function TagRecord(name) {
 //    const record = {
 //
@@ -155,4 +128,4 @@ function createTagList(name) {
 //    );
 //}
 
-module.exports = {createTag};
+module.exports = {createTag, createTagList};
