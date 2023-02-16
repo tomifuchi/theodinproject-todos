@@ -29,7 +29,7 @@ const TagListProto = {
         return JSON.stringify(tagA) === JSON.stringify(tagB);
     },
     getTagList: function () {
-        return JSON.parse(JSON.stringify(this._tagList));
+        return this._tagList;
     }
 }
 
@@ -42,90 +42,95 @@ function createTagList(name) {
     );
 }
 
-//function TagRecord(name) {
-//    const record = {
-//
-//    };
-//    /*
-//    const tagRecord = {
-//        project: {
-//            mockProjectA: [IDs],
-//            education: [0, 1, 2],
-//        },
-//        section: {
-//            mockSectionA: [IDs],
-//            mockSectionB: [IDs],
-//            mathematics: [2],
-//            fixbug: [1],
-//            programming: [0],
-//        }
-//        anything: {
-//            untagged: [IDs],
-//            topicA: [IDs],
-//            topicB: [IDs],
-//            linear-algebra: [2],
-//            Javascript: [0, 1],
-//            Haskell: [0, 1],
-//            functional-programming: [0,1],
-//        }
-//    }*/
-//
-//    //Expect identifer:topic or topic only
-//    function addToRecord(ID, tag) {
-//
-//        const [identifer, topic] = toIdenAndTopic(tag);
-//
-//        if(!hasIdentifier(identifer)){
-//            addIdentifier(identifer);
-//        }
-//        if(!hasTopic(identifer, topic)){
-//            addTopic(identifer, topic);
-//        }
-//        addNoteID(ID, identifer, topic);
-//
-//        function toIdenAndTopic(tag) {
-//            let [identifer = '', topic = ''] = tag.split(':');
-//            if(identifer == '') {
-//                identifer = topic;
-//                topic = '';
-//            }
-//            return [identifer, topic];
-//        }
-//
-//        //Check against record object
-//        function hasIdentifier(identifer) {
-//            return record.hasOwnProperty(identifer);
-//        }
-//
-//        function hasTopic(identifier, topic) {
-//            return record[identifier].hasOwnProperty(topic);
-//        }
-//
-//        //Add to record
-//        function addIdentifier(identifer) {
-//            record[identifer] = {};
-//        }
-//
-//        function addTopic(identifer, topic) {
-//            record[identifer][topic] = [];
-//        }
-//
-//        //Add id to identifier topic
-//        function addNoteID(ID, identifer, topic) {
-//            record[identifer][topic].push(ID);
-//        }
-//    }
-//
-//    function getRecord() {
-//        return JSON.parse(JSON.stringify(record));
-//    }
-//
-//    return Object.assign(
-//        Object.create({
-//            addToRecord, getRecord,
-//        }),
-//        state
-//    );
-//}
+//This shouldn't be accesible anywhere, hidden away.
+//Exported for testing purpose
+function TagRecord(name) {
+    const state = {
+        name
+    };
+    record = {};
+    /*
+    const tagRecord = {
+        project: {
+            mockProjectA: [IDs],
+            education: [0, 1, 2],
+        },
+        section: {
+            mockSectionA: [IDs],
+            mockSectionB: [IDs],
+            mathematics: [2],
+            fixbug: [1],
+            programming: [0],
+        }
+        anything: {
+            untagged: [IDs],
+            topicA: [IDs],
+            topicB: [IDs],
+            linear-algebra: [2],
+            Javascript: [0, 1],
+            Haskell: [0, 1],
+            functional-programming: [0,1],
+        }
+    }*/
+    //Check against record object
+    function hasIdentifier(identifer) {
+        return record.hasOwnProperty(identifer);
+    }
 
-module.exports = {createTag, createTagList};
+    function hasTopic(identifier, topic) {
+        return record[identifier].hasOwnProperty(topic);
+    }
+
+    //Expect identifer:topic or topic only
+    function addToRecord(ID, tag) {
+
+
+        //Add to record
+        function addIdentifier(identifer) {
+            record[identifer] = {};
+        }
+
+        function addTopic(identifer, topic) {
+            record[identifer][topic] = [];
+        }
+
+        //Add id to identifier topic
+        function addNoteID(ID, identifer, topic) {
+            record[identifer][topic].push(ID);
+        }
+
+        const [identifer, topic] = tag.getAsArr();
+
+        if(!hasIdentifier(identifer)){
+            addIdentifier(identifer);
+        }
+        if(!hasTopic(identifer, topic)){
+            addTopic(identifer, topic);
+        }
+        addNoteID(ID, identifer, topic);
+    }
+
+    //Array of IDs with that identifiers and topics
+    function searchForID(tag){
+        const [identifier, topic] = tag.getAsArr();
+        if(hasIdentifier(identifier)){
+            if(hasTopic(identifier, topic)){
+                return JSON.parse(JSON.stringify(record[identifier][topic]));
+            }
+        }
+        return [];
+    }
+
+    function getRecord() {
+        return JSON.parse(JSON.stringify(record));
+    }
+
+    return Object.assign(
+        Object.create({
+            addToRecord, getRecord, searchForID
+        }),
+        state
+    );
+}
+
+module.exports = {createTag, createTagList, TagRecord};
