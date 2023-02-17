@@ -1,19 +1,12 @@
 //Modules
 const pubsub = require('./pubsub');
 const {format} = require('date-fns');
+const tagModule = require('./tag');
 
 function Project(name) {
     
     const state = {name};
-
     const noteList = [];
-    const tagDataBase = {
-        projects: [],
-        topics: [],
-        checkDuplicates: function (list, newTag) {
-            return this[list].some((tag) => tag == newTag);
-        },
-    };
 
     let ID = 0;
 
@@ -21,7 +14,7 @@ function Project(name) {
     function createNote (title, description, content, dueDate, dueDateformat='dd/MM/yyyy', priority, tags) { 
         pubsub.publish('log','createNote', `${this.name} note.js:createNote invoke`); //Unless we learn async, we won't know if the function is sucessfully created or not so this will do for now
         const state = {
-            title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, noteStatus: 'unfinished'
+            title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags: tagModule.createTagList('default-name').addTag(tags), noteStatus: 'unfinished'
         };
 
         return state;
@@ -33,7 +26,6 @@ function Project(name) {
             const newNote = {...note, ID: ID++};
             noteList.push(newNote);
             //_addRequirementTags(newNote.ID);
-            //this.addTag(newNote.ID, `project:${this.name}`);
         }
     }
 
@@ -80,7 +72,7 @@ function Project(name) {
     }
     
     //Filter note by tag
-    //Tag related operation
+    //Tag module related operation
     function filterByTag(searchingTag){
         return noteList.filter(({tags}) => tags.some((tag) => tag == searchingTag));
     }
@@ -121,17 +113,6 @@ function noteImportTest () {
     return 'Note module import successful';
 }
 
-Project.createTestNote = () => {
-    return {
-        ID: 0,
-        title: 'Random title',
-        description: 'Any description',
-        content: 'content: Any random content goes here',
-        dueDate: format(new Date(1971, 11, 1), 'dd/MM/yyyy'),
-        priority: 'normal',
-        tags: ['tag A', 'tag B', 'tag C'],
-        noteStatus: 'unfinished',
-    };
-}
+
 
 module.exports = {Project, noteImportTest};

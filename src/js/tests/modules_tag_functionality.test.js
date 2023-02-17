@@ -5,6 +5,19 @@ test('Test tag creation', () => {
     expect(testTag).toStrictEqual({identifier: 'project', topic: 'education'});
     expect(testTag.getAsStr()).toBe('project:education');
     expect(testTag.getAsArr()).toStrictEqual(['project', 'education']);
+
+
+    const fromStrTagA = tagModule.createTag.fromStr('anything:Java');
+
+    expect(fromStrTagA).toStrictEqual({identifier: 'anything', topic: 'Java'});
+    expect(fromStrTagA.getAsStr()).toBe('anything:Java');
+    expect(fromStrTagA.getAsArr()).toStrictEqual(['anything', 'Java']);
+
+
+    const fromStrTagB = tagModule.createTag.fromStr('C#');
+    expect(fromStrTagB).toStrictEqual({identifier: 'anything', topic: 'C#'});
+    expect(fromStrTagB.getAsStr()).toBe('anything:C#');
+    expect(fromStrTagB.getAsArr()).toStrictEqual(['anything', 'C#']);
 })
 
 const testTagList = tagModule.createTagList('testTagList');
@@ -41,7 +54,6 @@ const testTagRecord = tagModule.TagRecord('testTagRecord');
 testTagList.getTagList().forEach(tag => testTagRecord.addToRecord(0, tag));
 testTagList.getTagList().forEach(tag => testTagRecord.addToRecord(1, tag));
 
-console.log(testTagRecord.getRecord());
 test('Testing a tag add to the Record', () => {
     expect(testTagRecord.getRecord()).toStrictEqual({
         project: {

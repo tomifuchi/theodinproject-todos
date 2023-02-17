@@ -14,9 +14,21 @@ function createTag(identifier = 'anything', topic = 'default') {
     );
 }
 
+createTag.fromStr = function (str) {
+    let [identifier, topic] = str.split(':');
+
+    if (topic === undefined) {
+        topic = identifier;
+        identifier = undefined;
+    }
+
+    return createTag(identifier, topic);
+}
+
 const TagListProto = {
     addTag: function(...tags) {
         tags.forEach((tag) => {if (!this.checkForTag(tag)) this._tagList.push(tag)})
+        return this;
     },
     removeTag: function (removingTag) {
       if(this.checkForTag(removingTag))
@@ -49,29 +61,7 @@ function TagRecord(name) {
         name
     };
     record = {};
-    /*
-    const tagRecord = {
-        project: {
-            mockProjectA: [IDs],
-            education: [0, 1, 2],
-        },
-        section: {
-            mockSectionA: [IDs],
-            mockSectionB: [IDs],
-            mathematics: [2],
-            fixbug: [1],
-            programming: [0],
-        }
-        anything: {
-            untagged: [IDs],
-            topicA: [IDs],
-            topicB: [IDs],
-            linear-algebra: [2],
-            Javascript: [0, 1],
-            Haskell: [0, 1],
-            functional-programming: [0,1],
-        }
-    }*/
+
     //Check against record object
     function hasIdentifier(identifer) {
         return record.hasOwnProperty(identifer);
