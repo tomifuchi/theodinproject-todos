@@ -13,7 +13,7 @@ function makeTestProject (name) {
             'content: any random content goes here',
             new Date(1971,12,1), 'dd/MM/yyyy',
             'normal',
-            ['project:education', 'programming:Javascript', 'functional-programming:Haskell']
+            ['programming:Javascript', 'functional-programming:Haskell']
         )
     );
     testProject.addNote(
@@ -23,7 +23,7 @@ function makeTestProject (name) {
             'content: any random content goes here',
             new Date(1969,4,3), 'dd/MM/yyyy',
             'normal',
-            ['project:education', 'programming:C', 'functional-programming:Elixir']
+            ['programming:C', 'functional-programming:Elixir']
         )
     );
     testProject.addNote(
@@ -33,7 +33,7 @@ function makeTestProject (name) {
             'content: any random content goes here',
             new Date(1953,7,3), 'dd/MM/yyyy',
             'normal',
-            ['project:shopping', 'rock-band:guitar', 'learn-music:read-music-sheet']
+            ['rock-band:guitar', 'learn-music:read-music-sheet']
         )
     );
     return testProject;
@@ -41,71 +41,59 @@ function makeTestProject (name) {
 
 const testProjectA = makeTestProject('testProjectA');
 
-test('Note creation', () => {
-    console.log(testProjectA.getNoteList());
-    expect((testProjectA.getNoteList().length)).toBe(3);
-});
-
-
 //Testing note functionality
 //Variables and configuration for testing
-//const resultNoteA = {
-//    ID: 0,
-//    title: 'Random title',
-//    description :'Any description',
-//    content: 'content: Any random content goes here',
-//    dueDate: format(new Date(1971, 11, 1), 'dd/MM/yyyy'),
-//    priority: 'normal',
-//    tags: ['tag A', 'tag B', 'tag C'],
-//    noteStatus: 'unfinished',
-//}
-//const testProjectA = note.Project('testProjectA');
-//const testNoteA =  note.Project.createTestNote();
-//testProjectA.addNote(testNoteA);
-//
-////The tests themselves
-//
-//test('Note reading' ,() => {
-//    expect(testProjectA.getNote(-1)).toStrictEqual(undefined);
-//    expect(testProjectA.getNote(0)).toStrictEqual(resultNoteA);
-//    expect(testProjectA.getNote(1)).toStrictEqual(undefined);
-//    expect(testProjectA.getNote(2)).toStrictEqual(undefined);
-//});
-//
-//test('Note edditting', () => {
-//    resultNoteA.title = 'Something for A';
-//
-//    //This makes a different
-//    testProjectA.editNote({ID: 0, title: 'Something for A'});
-//    //While this will not because there's no ID for this object.
-//    testProjectA.editNote({title: 'HuHueHue something else'});
-//
-//    expect(testProjectA.getNote(0)).toStrictEqual(resultNoteA);
-//});
-//
-//test('Note removing', () => {
-//    //This matters
-//    testProjectA.removeNote(0);
-//    //While this does nothing
-//    testProjectA.removeNote(-1);
-//    expect(testProjectA.getNote(0)).toStrictEqual(undefined);
-//});
-//
-////Between projects
-////Moving notes around projects
-//const testProjectB = note.Project('testProjectB');
-//const testProjectC = note.Project('testProjectC');
-//const testNoteB = {...note.Project.createTestNote(), title: 'Something for B'};
-//testProjectB.addNote(testNoteB);
-//
-//const testNoteC = {...note.Project.createTestNote(), title: 'Something for C'};
-//testProjectC.addNote(testNoteC);
-//
-//test('Moving notes between projects', () => {
-//    testProjectC.moveNote(0, testProjectB);
-//    expect(testProjectB.getNote(1)).toStrictEqual({...testNoteC, ID: 1});
-//    expect(testProjectC.getNote(0)).toStrictEqual(undefined);
-//});
+const resultNoteA = {
+    ID: 0,
+    title: 'Something for A',
+    description :'random description for A',
+    content: 'content: any random content goes here',
+    dueDate: format(new Date(1971, 12, 1), 'dd/MM/yyyy'),
+    priority: 'normal',
+    tags: tagModule.createTagList('default-name').addTag(
+        ...['programming:Javascript', 'functional-programming:Haskell','project:testProjectA'].map(i => tagModule.createTag.fromStr(i))
+    ),
+    noteStatus: 'unfinished',
+}
+
+//The tests themselves
+test('Note reading' ,() => {
+    expect(testProjectA.getNote(-1)).toStrictEqual(undefined);
+    expect(testProjectA.getNote(0)).toStrictEqual(resultNoteA);
+    expect(testProjectA.getNote(3)).toStrictEqual(undefined);
+});
+
+test('Note edditting', () => {
+    resultNoteA.title = 'Special thing for A*';
+
+    //This makes a different
+    testProjectA.editNote({ID: 0, title: 'Special thing for A*'});
+    //While this will not because there's no ID for this object.
+    testProjectA.editNote({title: 'HuHueHue something else'});
+
+    expect(testProjectA.getNote(0)).toStrictEqual(resultNoteA);
+});
+
+test('Note removing', () => {
+    //This matters
+    testProjectA.removeNote(0);
+    //While this does nothing
+    testProjectA.removeNote(-1);
+    expect(testProjectA.getNote(0)).toStrictEqual(undefined);
+});
+
+//Between projects
+//Moving notes around projects
+const testProjectB = makeTestProject('testProjectB');
+const testProjectC = makeTestProject('testProjectC');
+
+test('Moving notes between projects', () => {
+    testProjectC.moveNote(0, testProjectB);
+    expect(testProjectB.getNote(3)).toStrictEqual(
+        {...testProjectC.getNote(0), ID: 3}
+    );
+    expect(testProjectC.getNote(0)).toStrictEqual(undefined);
+});
 //
 ////Duplicate notes to projects
 //test('Duplicating note from one project to project(s)', () => {

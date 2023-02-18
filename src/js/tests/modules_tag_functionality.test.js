@@ -50,6 +50,7 @@ test('Removing the tags', () => {
 });
 
 //Tag record
+/*
 const testTagRecord = tagModule.TagRecord('testTagRecord');
 testTagList.getTagList().forEach(tag => testTagRecord.addToRecord(0, tag));
 testTagList.getTagList().forEach(tag => testTagRecord.addToRecord(1, tag));
@@ -74,3 +75,4 @@ test('Search for ID from record', () => {
     expect(testTagRecord.searchForID(tagModule.createTag('project', 'something'))).toStrictEqual([]);
     expect(testTagRecord.searchForID(tagModule.createTag())).toStrictEqual([]);
 });
+*/

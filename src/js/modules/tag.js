@@ -56,6 +56,7 @@ function createTagList(name) {
 
 //This shouldn't be accesible anywhere, hidden away.
 //Exported for testing purpose
+/*
 function TagRecord(name) {
     const state = {
         name
@@ -73,7 +74,6 @@ function TagRecord(name) {
 
     //Expect identifer:topic or topic only
     function addToRecord(ID, tag) {
-
 
         //Add to record
         function addIdentifier(identifer) {
@@ -122,5 +122,7 @@ function TagRecord(name) {
         state
     );
 }
+const todoTagRecord = TagRecord('todos-tag-record');
+*/
 
-module.exports = {createTag, createTagList, TagRecord};
+module.exports = {createTag, createTagList};
