@@ -74,16 +74,16 @@ function Project(name) {
     //Filter note by tag
     //Tag module related operation
     function filterByTag(searchingTag){
-        return noteList.filter(({tags}) => tags.some((tag) => tag == searchingTag));
+        pubsub.publish('read','query-note-by-tag', searchingTag);
+        //return noteList.filter(({tags}) => tags.some((tag) => tag == searchingTag));
     }
 
     function _addRequirementTags(ID) {
         this.addTag(ID, `project:${this.name}`);
     }
 
-    function addTag(ID, tag) {
-        if(!this.checkForTag(ID, tag))
-            (this.getNote(ID)).tags.push(tag);
+    function addTag(ID) {
+        pubsub.publish('create', 'add-tag-to-note', tag);
     }
 
     function removeTag(ID, tag) {
