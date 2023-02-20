@@ -87,14 +87,21 @@ test('Note removing', () => {
 const testProjectB = makeTestProject('testProjectB');
 const testProjectC = makeTestProject('testProjectC');
 
-test('Moving notes between projects', () => {
-    testProjectC.moveNote(0, testProjectB);
+test('Duplicate/Moving between projects', () => {
+    //Duplicating
+    testProjectC.duplicateNote(0, testProjectB);
     expect(testProjectB.getNote(3)).toStrictEqual(
         {...testProjectC.getNote(0), ID: 3}
     );
+
+    //Moving
+    testProjectC.moveNote(0, testProjectB);
+    expect(testProjectB.getNote(4)).toStrictEqual({...testProjectB.getNote(3), ID: 4});
     expect(testProjectC.getNote(0)).toStrictEqual(undefined);
 });
-//
+
+
+// Old tests
 ////Duplicate notes to projects
 //test('Duplicating note from one project to project(s)', () => {
 //    testProjectB.duplicateNote(0, testProjectA, testProjectC);

@@ -51,6 +51,15 @@ test('Removing the tags', () => {
 
 //Tag record
 /*
+const testTagRecord = tagModule.createTagRecord(0, tagModule.createTag.fromStr(`project:education`));
+test('tag record creation', () => {
+    expect(testTagRecord.getAsStr()).toBe('project:education#0');
+    expect(testTagRecord.getAsArr()).toStrictEqual([
+        'project', 'education', 0
+    ]);
+})
+*/
+/*
 const testTagRecord = tagModule.TagRecord('testTagRecord');
 testTagList.getTagList().forEach(tag => testTagRecord.addToRecord(0, tag));
 testTagList.getTagList().forEach(tag => testTagRecord.addToRecord(1, tag));

@@ -73,14 +73,19 @@ function Project(name) {
 
     //Interaction with other projects
     function moveNote(ID, destProject) {
+        const note = this.getNote(ID);
+        note.tags.removeTag(`project:${this.name}`);
         destProject.addNote(this.getNote(ID));
         this.removeNote(ID);
     }
 
     function duplicateNote(ID, ...destProjs) {
         const note = this.getNote(ID);
+        note.tags.removeTag(`project:${this.name}`);
         destProjs.forEach((proj) => proj.addNote(note));
     }
+
+
     
     //Filter note by tag
     //Tag module related operation

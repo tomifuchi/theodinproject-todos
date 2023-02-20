@@ -1,7 +1,7 @@
 //Taggings system to work note, but it can be repurpose to work with anything
 //Usually this is system wide or so I thought.
 
-const TagProto = {
+const tagProto = {
     getAsStr: function () {return `${this.identifier}:${this.topic}`},
     getAsArr: function () {return [this.identifier, this.topic]},
 };
@@ -9,7 +9,7 @@ const TagProto = {
 function createTag(identifier = 'anything', topic = 'default') {
     const state = {identifier, topic};
     return Object.assign(
-        Object.create(TagProto),
+        Object.create(tagProto),
         state
     );
 }
@@ -25,7 +25,7 @@ createTag.fromStr = function (str) {
     return createTag(identifier, topic);
 }
 
-const TagListProto = {
+const tagListProto = {
     addTag: function(...tags) {
         tags.forEach((tag) => {if (!this.checkForTag(tag)) this._tagList.push(tag)})
         return this;
@@ -49,10 +49,61 @@ function createTagList(name) {
     const state = {name, _tagList: []};
 
     return Object.assign(
-        Object.create(TagListProto),
+        Object.create(tagListProto),
         state
     );
 }
+
+const tagRecordProto = {
+    getAsStr: function () {return `${this.identifier}:${this.topic}#${this.ID}`},
+    getAsArr: function () {return [this.identifier, this.topic, this.ID]},
+};
+
+/* 
+    This situation below proves to me that
+    Object.assign only assigns surface propertise and not the prototype
+    since tag is an object with it's own prototype. Tag record also have prototype
+    but in the end when invoke, getAsStr and getAsArr return the tag prototype's method
+    this would mean that Object.create(tagRecordProto)'s prototype wasn't assigned to
+    tag's prototype.
+
+    If we switch the order then we would get Object.create(tagRecordProto) methods or prototype.
+
+    This will give us tagRecordProto's prototype
+    return Object.assign(
+        Object.create(tagRecordProto),
+        tag,
+        state
+    )
+
+    This will give us tag's prototype
+    return Object.assign(
+        tag,
+        Object.create(tagRecordProto),
+        state
+    )
+*/
+/*
+function createTagRecord(ID, tag) {
+    const state = {ID};
+    return Object.assign(
+        Object.create(tagRecordProto),
+        tag,
+        state
+    )
+}
+*/
+
+/*
+function TagRecordList (name) {
+    const state = {name, _recordList};
+
+    return Object.assign(
+        Object.create(tagRecordProto),
+        state
+    )
+}
+*/
 
 //This shouldn't be accesible anywhere, hidden away.
 //Exported for testing purpose
