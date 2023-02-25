@@ -1,6 +1,57 @@
+@use "sass:list";
+@import 'base';
+
+body {
+    @extend %reset-margin-padding;
+    font-size: $font-size;
+    min-height: 100vh;
+
+
+    @include grid($column: 1fr 1fr 1fr 1fr);
+    @include defineGridArea(
+        (
+            'header': header,
+            'aside': aside,
+            'main': main,
+            'footer': footer,
+        )
+    );
+    grid-template-areas: 
+        'header main main footer'
+        'header main main footer'
+        'header main main footer'
+    ;
+}
+
+%header-footer-settings {
+    background-color: black;
+    color: white;
+    padding: 50px;
+    font-size: 2rem;
+}
+
+header {
+    @extend %header-footer-settings;
+
+    .logo {
+        span {
+            border: 1px solid white;
+        }
+    }
+}
+
+main {
+
+}
+
+footer {
+    @extend %header-footer-settings;
+}
+
 #log {
-    min-height: 400px;
-    max-height: 500px;
-    min-width: 350px;
+    font-size: 1rem;
+    white-space: pre-wrap;
+    height: 500px;
+    max-width: 700px;
     overflow: scroll;
 }
