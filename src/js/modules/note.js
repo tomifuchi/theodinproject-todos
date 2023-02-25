@@ -57,6 +57,7 @@ function Project(name) {
     function getNoteList()  {
         const list = JSON.parse(JSON.stringify(noteList));
         pubsub.publish('log','getNoteList', `${this.name} project; note.js:getNoteList returned this:\n${JSON.stringify(list)}`);
+        pubsub.publish('read','todos-list-container', noteList);
         return noteList;
     }
 

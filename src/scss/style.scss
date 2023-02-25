@@ -4,30 +4,11 @@
 body {
     @extend %reset-margin-padding;
     font-size: $font-size;
-    min-height: 100vh;
-
-
-    @include grid($column: 1fr 1fr 1fr 1fr);
-    @include defineGridArea(
-        (
-            'header': header,
-            'aside': aside,
-            'main': main,
-            'footer': footer,
-        )
-    );
-    grid-template-areas: 
-        'header main main footer'
-        'header main main footer'
-        'header main main footer'
-    ;
 }
 
 %header-footer-settings {
     background-color: black;
     color: white;
-    padding: 50px;
-    font-size: 2rem;
 }
 
 header {
@@ -49,7 +30,6 @@ footer {
 }
 
 #log {
-    font-size: 1rem;
     white-space: pre-wrap;
     height: 500px;
     max-width: 700px;
