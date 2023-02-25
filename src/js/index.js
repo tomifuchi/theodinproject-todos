@@ -3,9 +3,9 @@
     STATUS      TASKS
     OK    * Every note must have a project tag so we know which project it belongs to.
     OK    * Every note must have atleast one section tag.
+    OKISH * Tagging system
     NOPE  * Search note by content, this feature might takes too long to complete. 
-    QUEUE * Front end design
-    INPROGRESS * Tagging system
+    INPROGRESS * Front end design
     ========================================================================================
 
     Brain storming on how we could go about creating todos
@@ -162,9 +162,42 @@ pubsub.subscribe('htmlLogger', 'log', 'getNoteList', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'removeNote', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'editNote', logToHtml);
 
-const inbox = note.Project('Inbox');
-inbox.addNote({...note.Project.createTestNote(), title: 'Something #1'});
-inbox.addNote({...note.Project.createTestNote(), title: 'Something #2'});
-inbox.addNote({...note.Project.createTestNote(), title: 'Something #3'});
-inbox.getNoteList();
 
+function makeTestProject (name) {
+
+    const testProject = note.Project(name);
+    testProject.addNote(
+        testProject.createNote(
+            'Something for A', 
+            'random description for A',
+            'content: any random content goes here',
+            new Date(1971,12,1), 'dd/MM/yyyy',
+            'normal',
+            ['programming:Javascript', 'functional-programming:Haskell']
+        )
+    );
+    testProject.addNote(
+        testProject.createNote(
+            'Something for B', 
+            'random description for B',
+            'content: any random content goes here',
+            new Date(1969,4,3), 'dd/MM/yyyy',
+            'normal',
+            ['programming:C', 'functional-programming:Elixir']
+        )
+    );
+    testProject.addNote(
+        testProject.createNote(
+            'Something for C', 
+            'random description for C',
+            'content: any random content goes here',
+            new Date(1953,7,3), 'dd/MM/yyyy',
+            'normal',
+            ['rock-band:guitar', 'learn-music:read-music-sheet']
+        )
+    );
+    return testProject;
+}
+
+const inbox = makeTestProject('Inbox');
+inbox.getNoteList();
