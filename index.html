@@ -10,22 +10,23 @@
   <body> 
     <header> 
       <div class="logo">/** Todos **/</div>
-      <h2 id="current-project-title"></h2>
-      <section class="project-list-container">
-        <ul id="project-list"></ul>
-      </section>
-      <button>Add project</button>
+      <nav>
+        <h2 id="current-project-title"></h2>
+        <section class="project-list-container">
+          <ul id="project-list"></ul>
+          <button>Add project</button>
+        </section>
+      </nav>
     </header>
     <main> 
-      <h2>This area display the todos and jump to their contents</h2>
       <section id="todos-list-container">
         <ul id="todos-list"></ul>
-        <button id="add-note">Add note </button>
+        <button id="add-note">Add note + </button>
       </section>
     </main>
     <!--title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, noteStatus: 'unfinished'-->
-    <footer>This is a footer
-      <h3>htmlLogger</h3>
+    <footer> 
+      <h3>Log from publish/subscribe module:</h3>
       <pre id="log" style="border: 1px solid #ccc;"> </pre>
     </footer>
   </body>
