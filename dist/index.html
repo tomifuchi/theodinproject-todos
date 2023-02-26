@@ -10,22 +10,17 @@
   <body> 
     <header> 
       <div class="logo">/** Todos **/</div>
-      <h2>Projects</h2>
+      <h2 id="current-project-title"></h2>
       <section class="project-list-container">
-        <ul id="project-list">
-          <li class="project-list-item">Inbox</li>
-          <li class="project-list-item">Education</li>
-          <li class="project-list-item">Programming</li>
-          <li class="project-list-item">Shopping</li>
-        </ul>
+        <ul id="project-list"></ul>
       </section>
-      <button>Add Project</button>
+      <button>Add project</button>
     </header>
     <main> 
       <h2>This area display the todos and jump to their contents</h2>
-      <section class="todos-list-container">
+      <section id="todos-list-container">
         <ul id="todos-list"></ul>
-        <button>Add Project</button>
+        <button id="add-note">Add note </button>
       </section>
     </main>
     <!--title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, noteStatus: 'unfinished'-->

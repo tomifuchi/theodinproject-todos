@@ -1,5 +1,4 @@
-//Taggings system to work note, but it can be repurpose to work with anything
-//Usually this is system wide or so I thought.
+//Taggings system to work with note, but it can be repurpose to work with anything
 
 const tagProto = {
     getAsStr: function () {return `${this.identifier}:${this.topic}`},

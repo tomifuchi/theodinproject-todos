@@ -1,6 +1,6 @@
 const {format} =  require('date-fns');
 const note   = require('../modules/note');
-const tagModule = require('../modules/tag');
+const tagModule = require('../modules/sub_modules/tag');
 
 
 function makeTestProject (name) {

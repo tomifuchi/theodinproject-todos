@@ -1,7 +1,8 @@
 //Modules
 const pubsub = require('./pubsub');
 const {format} = require('date-fns');
-const tagModule = require('./tag');
+//Sub modules
+const tagModule = require('./sub_modules/tag');
 
 function Project(name) {
     
@@ -58,6 +59,7 @@ function Project(name) {
         const list = JSON.parse(JSON.stringify(noteList));
         pubsub.publish('log','getNoteList', `${this.name} project; note.js:getNoteList returned this:\n${JSON.stringify(list)}`);
         pubsub.publish('read','todos-list-container', noteList);
+        pubsub.publish('read','current-project-title', this.name);
         return noteList;
     }
 
@@ -85,8 +87,6 @@ function Project(name) {
         note.tags.removeTag(`project:${this.name}`);
         destProjs.forEach((proj) => proj.addNote(note));
     }
-
-
     
     //Filter note by tag
     //Tag module related operation

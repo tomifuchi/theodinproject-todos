@@ -9,19 +9,15 @@ html(lang="en")
     body 
         header 
             .logo /** Todos **/
-            h2 Projects
+            h2#current-project-title
             section.project-list-container
                 ul#project-list
-                    li.project-list-item Inbox
-                    li.project-list-item Education
-                    li.project-list-item Programming
-                    li.project-list-item Shopping
-            button Add Project
+            button Add project
         main 
             h2 This area display the todos and jump to their contents
-            section.todos-list-container
+            section#todos-list-container
                 ul#todos-list
-                button Add Project
+                button#add-note Add note 
 
         //title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, noteStatus: 'unfinished'
         footer This is a footer

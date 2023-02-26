@@ -146,7 +146,7 @@ require('../scss/style.scss');
 const pubsub = require('./modules/pubsub');
 const note   = require('./modules/note');
 const logger = require('./modules/logger');
-require('./modules/display');
+const display = require('./modules/display');
 
 //Html logger
 const htmlLogger = logger.Logger('htmlLogger');
@@ -156,7 +156,7 @@ const logToHtml = (msg) => {
 };
 
 //pubsub.subscribe('htmlLogger', 'log', 'createNote', logToHtml);
-//pubsub.subscribe('htmlLogger', 'log', 'addNote', logToHtml);
+pubsub.subscribe('htmlLogger', 'log', 'addNote', logToHtml);
 pubsub.subscribe('htmlLogger', 'log', 'getNoteList', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'getNote', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'removeNote', logToHtml);
@@ -168,9 +168,9 @@ function makeTestProject (name) {
     const testProject = note.Project(name);
     testProject.addNote(
         testProject.createNote(
-            'Something for A', 
+            'Note title A', 
             'random description for A',
-            'content: any random content goes here',
+            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
             new Date(1971,12,1), 'dd/MM/yyyy',
             'normal',
             ['programming:Javascript', 'functional-programming:Haskell']
@@ -180,7 +180,7 @@ function makeTestProject (name) {
         testProject.createNote(
             'Something for B', 
             'random description for B',
-            'content: any random content goes here',
+            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
             new Date(1969,4,3), 'dd/MM/yyyy',
             'normal',
             ['programming:C', 'functional-programming:Elixir']
@@ -188,9 +188,19 @@ function makeTestProject (name) {
     );
     testProject.addNote(
         testProject.createNote(
-            'Something for C', 
+            'Note title for note C', 
             'random description for C',
-            'content: any random content goes here',
+            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+            new Date(1953,7,3), 'dd/MM/yyyy',
+            'normal',
+            ['rock-band:guitar', 'learn-music:read-music-sheet']
+        )
+    );
+    testProject.addNote(
+        testProject.createNote(
+            'Note title for note D', 
+            'random description for D',
+            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
             new Date(1953,7,3), 'dd/MM/yyyy',
             'normal',
             ['rock-band:guitar', 'learn-music:read-music-sheet']
@@ -200,4 +210,10 @@ function makeTestProject (name) {
 }
 
 const inbox = makeTestProject('Inbox');
-inbox.getNoteList();
+const education = makeTestProject('Education');
+education.removeNote(0);
+const programming = makeTestProject('Programming');
+programming.removeNote(2);
+const projects = [inbox,education,programming];
+
+display.init(projects);
