@@ -1,6 +1,13 @@
 @import 'starter/starter';
 
+@font-face {
+    font-family: 'press-start-2p';
+    src: url('../assets/fonts/PressStart2P-vaV7.ttf') format('truetype');
+}
+
 $font-size: 16px;
+$font-size-press-start: 'press-start-2p';
+
 
 /* List */
 $testColor: #00202e, #003f5c, #2c4875, #8a508f, #bc5090, #ff6361, #ff8531, #ffa600, #ffd380;

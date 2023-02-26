@@ -1,4 +1,4 @@
-Notes on this project.
+**Notes on this project**
 
 Every module will talk to the pubsub module, subscribe to a particular topic then execute with callbackfunction with optional argument passed down by the publisher.
 
@@ -8,4 +8,9 @@ Logging functionality:
 you wanted to log, then have that function publish with it's arguments as logs to the logger. Then at the same time, the logger subscribe to the channel of the publisher and the function to handle the log that the publisher passed down.
 
 Html logger:
-- Created in index.js`
+- Created in index.js
+
+**Front end UI**:
+
+font choice: 
+* press-start-2p: https://www.fontspace.com/press-start-2p-font-f11591

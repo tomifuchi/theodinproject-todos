@@ -101,7 +101,7 @@ function init(projects) {
                 //    project.getNoteList();
                 //});
                 const addNoteBtn = document.createElement('button');
-                addNoteBtn.textContent = 'Add note';
+                addNoteBtn.textContent = 'Add note +';
                 addNoteBtn.addEventListener('click', () => {
                     project.addNote(
                  project.createNote(

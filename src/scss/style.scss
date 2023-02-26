@@ -13,16 +13,42 @@ body {
 
 header {
     @extend %header-footer-settings;
+    @include flex($direction: column, $align: center);
+
+
+    nav {
+    }
 
     .logo {
+        font-family: 'press-start-2p';
         span {
             border: 1px solid white;
+        }
+    }
+
+    ul {
+        @extend %reset-margin-padding;
+
+        li {
+            @extend %reset-margin-padding;
         }
     }
 }
 
 main {
+    #todos-list-container{
+        @include flex($direction: column, $align: center);
 
+        button {
+            background-color: transparent;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid black;
+        }
+    }
+    ul {
+        @extend %reset-margin-padding;
+    }
 }
 
 footer {
@@ -30,8 +56,9 @@ footer {
 }
 
 #log {
+    font-family: Arial, Helvetica, sans-serif;
     white-space: pre-wrap;
-    height: 500px;
+    max-height: 400px;
     max-width: 700px;
     overflow: scroll;
 }
