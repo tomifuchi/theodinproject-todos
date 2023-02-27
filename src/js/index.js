@@ -196,24 +196,33 @@ function makeTestProject (name) {
             ['rock-band:guitar', 'learn-music:read-music-sheet']
         )
     );
-    testProject.addNote(
-        testProject.createNote(
-            'Note title for note D', 
-            'random description for D',
-            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-            new Date(1953,7,3), 'dd/MM/yyyy',
-            'normal',
-            ['rock-band:guitar', 'learn-music:read-music-sheet']
-        )
-    );
     return testProject;
 }
 
 const inbox = makeTestProject('Inbox');
 const education = makeTestProject('Education');
-education.removeNote(0);
 const programming = makeTestProject('Programming');
-programming.removeNote(2);
-const projects = [inbox,education,programming];
+const somethingElse = makeTestProject('SomethingElse');
+const projects = [inbox,education,programming, somethingElse];
 
 display.init(projects);
+
+/*
+inbox.addNote(inbox.createNote(
+    'Automaticlly refresh to this shit.', 
+    'random description for D',
+    'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+    new Date(1953,7,3), 'dd/MM/yyyy',
+    'normal',
+    ['rock-band:guitar', 'learn-music:read-music-sheet']
+));
+
+education.addNote(inbox.createNote(
+    'Automaticlly refresh to this shit.', 
+    'random description for D',
+    'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+    new Date(1953,7,3), 'dd/MM/yyyy',
+    'normal',
+    ['rock-band:guitar', 'learn-music:read-music-sheet']
+));
+*/

@@ -9,7 +9,7 @@ function Logger(name) {
 
     return Object.assign(
         Object.create({
-            log: function (msg) {return logs = `${this.logCounter++}: ${msg}\n${logs}`},
+            log: function (msg) {return logs = `${this.logCounter++}: ${msg}\n\n${logs}`},
             getLog: function () {return logs},
         }),
         state

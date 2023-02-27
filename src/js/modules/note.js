@@ -35,6 +35,7 @@ function Project(name) {
             newNote.tags.addTag(tagModule.createTag.fromStr(`project:${this.name}`));
             noteList.push(newNote);
         }
+        this.getData();
     }
 
     //Removing
@@ -43,6 +44,7 @@ function Project(name) {
         const noteIndex = this.getNoteIndex(ID);
         if(noteIndex != -1) 
             noteList.splice(noteIndex, 1);
+        this.getData();
     }
 
     //Editting
@@ -52,14 +54,12 @@ function Project(name) {
         if(obj !== undefined) {
             Object.assign(obj, edittedNote);
         }
+        this.getData();
     }
 
     //Reading
     function getNoteList()  {
-        const list = JSON.parse(JSON.stringify(noteList));
-        pubsub.publish('log','getNoteList', `${this.name} project; note.js:getNoteList returned this:\n${JSON.stringify(list)}`);
-        pubsub.publish('read','todos-list-container', noteList);
-        pubsub.publish('read','current-project-title', this.name);
+        pubsub.publish('log','getNoteList', `${this.name} project; note.js:getNoteList returned this:\n${JSON.stringify(noteList)}`);
         return noteList;
     }
 
@@ -87,6 +87,13 @@ function Project(name) {
         note.tags.removeTag(`project:${this.name}`);
         destProjs.forEach((proj) => proj.addNote(note));
     }
+
+    //This is short cut to the pubsub module.
+    function getData() {
+        //console.log(this);
+        pubsub.publish('read','getData', this);
+    }
+
     
     //Filter note by tag
     //Tag module related operation
@@ -109,16 +116,22 @@ function Project(name) {
         return (this.getNote(ID)).tags.some((tag) => tag == searchingTag);
     }*/
 
-    return Object.assign(Object.create({
+    const project = Object.assign(
+        Object.create({
             //Note operations
             createNote, addNote, removeNote, editNote, getNote, getNoteList, getNoteIndex,
             //Tagging system
             //filterByTag, addTag, checkForTag, removeTag,
             //Notes and Projects operations
             moveNote, duplicateNote,
+            //Data retreival
+            getData,
         }),
-        state,
+        state
     );
+    pubsub.subscribe(`${project.name}-project`, 'read-request', `${project.name}-project-read-request`, () => {console.log('read-request-received');console.log(project);project.getData()});
+
+    return project;
 }
 
 //For testing purposes
