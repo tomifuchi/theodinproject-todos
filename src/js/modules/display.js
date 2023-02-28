@@ -56,10 +56,9 @@ function render(obj) {
 
     clearContent(cachedNodes.todosListContainer);
     addToElem(cachedNodes.todosListContainer, 
-        createNoteListElem(obj.getNoteList()),
+        bindNoteListElem(obj, createNoteListElem(obj.getNoteList())),
         createProjectOperations(obj),
     );
-
 }
 pubsub.subscribe('display','read', 'getData', render);
 
@@ -99,6 +98,16 @@ function createNoteListItemElem(note) {
     noteStatus.textContent = note.noteStatus;
     note_item.appendChild(noteStatus);
 
+    const delButton = document.createElement('button');
+    delButton.textContent = 'Delete note';
+    delButton.setAttribute('data-del-btn', '');
+    note_item.appendChild(delButton);
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit note';
+    editButton.setAttribute('data-edit-btn', '');
+    note_item.appendChild(editButton);
+
     return note_item;
 }
 
@@ -111,6 +120,21 @@ function createNoteListElem (noteList) {
     })
     return ul;
 }
+
+function bindNoteListElem(obj, ul) {
+    const ulArr = [...ul.childNodes];
+    (obj.getNoteList()).forEach((note,i) => {
+        ulArr[i].querySelector('button[data-del-btn]').addEventListener('click', () => {
+            obj.removeNote(note.ID);
+        })
+        ulArr[i].querySelector('button[data-edit-btn]').addEventListener('click', () => {
+            obj.editNote({ID: note.ID, title: 'Eddited note'});
+        })
+
+    })
+    return ul;
+}
+
 
 function createProjectOperations(obj) {
     const addNoteBtn = document.createElement('button');
