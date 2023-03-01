@@ -37,7 +37,7 @@ pubsub.subscribe('display','log','htmlLogger-logs', renderHtmlLogger);
     only render what's change but...Now lets do it simple, any change
     we re-render everything)
     This is cringy as fuck since this re renders and rebinding
-    even the fucking buttongs too! Which shouldn't be changed unless we 
+    even the fucking buttons too! Which shouldn't be changed unless we 
     change projects.
 
     * Item to render: 

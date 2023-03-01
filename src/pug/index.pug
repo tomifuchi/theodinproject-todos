@@ -18,6 +18,43 @@ html(lang="en")
             section#todos-list-container
                 ul#todos-list
                 button#add-note Add note + 
+            section
+                form(action="" method="post" id="create-note-form")
+                    h2 Note creation
+                    fieldset 
+                        legend Note info
+                        p
+                            label(for="title") Title:
+                            input(type="text" id="title" name="note_title" required)
+                            span
+                        p
+                            label(for="description") Description:
+                            input(type="text" id="description" name="note_description" required)
+                            span
+                        p
+                            label(for="content") Content:
+                            textarea(rows="10" cols="50" id="content" maxlength="1000" required)
+                        p
+                            label(for="due-date") Due date:
+                            input(type="date" id="due-date" name="note_dueDate" required)
+                        p 
+                            label(for="priority") Priority:
+                            select(id="priority")
+                                option(value="normal") Normal 
+                                option(value="moderate") Moderate
+                                option(value="urgent") Urgent
+                        p 
+                            label(for="tags") Tags:
+                            p These are space separated, and have syntax of indentifier:topic, example: rockband:guitar, programming:haskell, study:math:
+                            input(type="text" id="tags" name="note_tags")
+                        p 
+                            p Status:
+                            <label for="finished">Finished</label>
+                            <input type="radio" id="finished" value="finished" name="note_status">
+                            <label for="unfinised">Unfinished</label>
+                            <input type="radio" id="unfinished" value="unfinished" name="note_status" checked>
+
+                        button(type="button" id="create-note-btn") Create note
 
         //title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, noteStatus: 'unfinished'
         footer 

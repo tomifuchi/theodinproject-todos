@@ -141,6 +141,50 @@
     the search. That's it.
 */
 
+(() => {
+    const createNoteForm = document.getElementById('create-note-form');
+    const createNoteBtn = document.getElementById('create-note-btn')
+    createNoteBtn.addEventListener('click', (function submit() {
+        const tempProject= note.Project('tempProject');
+        const q = queryForm(createNoteForm);
+        if(createNoteForm.reportValidity()){
+                tempProject.addNote(tempProject.createNote(
+                    q('#title'),
+                    q('#description'),
+                    q('#content'),
+                    /*
+                        Parsing date from form
+                        https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
+
+                        This part is really important.
+
+                        Note: The displayed date format will differ from the actual value — 
+                        the displayed date is formatted based on the locale of the user's browser, 
+                        but the parsed value is always formatted yyyy-mm-dd.
+                    */
+                    Date.parse(q('#due-date')),
+                    'dd/MM/yyyy',
+                    q('#priority'),
+                    processTags(q('#tags'))
+                ));
+                console.log(tempProject.getNote(0).tags.getTagList());
+                createNoteForm.reset(); //Reset the form after submit
+        }
+    }));
+
+    function queryForm(form) {
+        return (query) => form.querySelector(query).value;
+    }
+
+    function processTags(str) {
+        return str.split(' ');
+    }
+
+    //Set minimum for today min in form
+    document.getElementById('due-date').min = new Date().toISOString().split("T")[0];;
+})();
+
+
 require('../scss/style.scss');
 
 const pubsub = require('./modules/pubsub');
