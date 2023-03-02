@@ -140,57 +140,14 @@
     let's think simple first, typing identifier:topic chain this together to nail down
     the search. That's it.
 */
-
-(() => {
-    const createNoteForm = document.getElementById('create-note-form');
-    const createNoteBtn = document.getElementById('create-note-btn')
-    createNoteBtn.addEventListener('click', (function submit() {
-        const tempProject= note.Project('tempProject');
-        const q = queryForm(createNoteForm);
-        if(createNoteForm.reportValidity()){
-                tempProject.addNote(tempProject.createNote(
-                    q('#title'),
-                    q('#description'),
-                    q('#content'),
-                    /*
-                        Parsing date from form
-                        https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
-
-                        This part is really important.
-
-                        Note: The displayed date format will differ from the actual value — 
-                        the displayed date is formatted based on the locale of the user's browser, 
-                        but the parsed value is always formatted yyyy-mm-dd.
-                    */
-                    Date.parse(q('#due-date')),
-                    'dd/MM/yyyy',
-                    q('#priority'),
-                    processTags(q('#tags'))
-                ));
-                console.log(tempProject.getNote(0).tags.getTagList());
-                createNoteForm.reset(); //Reset the form after submit
-        }
-    }));
-
-    function queryForm(form) {
-        return (query) => form.querySelector(query).value;
-    }
-
-    function processTags(str) {
-        return str.split(' ');
-    }
-
-    //Set minimum for today min in form
-    document.getElementById('due-date').min = new Date().toISOString().split("T")[0];;
-})();
-
-
 require('../scss/style.scss');
 
 const pubsub = require('./modules/pubsub');
 const note   = require('./modules/note');
 const logger = require('./modules/logger');
 const display = require('./modules/display');
+const form = require('./modules/form');
+
 
 //Html logger
 const htmlLogger = logger.Logger('htmlLogger');
@@ -210,36 +167,36 @@ pubsub.subscribe('htmlLogger', 'log', 'getNoteList', logToHtml);
 function makeTestProject (name) {
 
     const testProject = note.Project(name);
-    testProject.addNote(
-        testProject.createNote(
-            'Note title A', 
-            'random description for A',
-            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-            new Date(1971,12,1), 'dd/MM/yyyy',
-            'normal',
-            ['programming:Javascript', 'functional-programming:Haskell']
-        )
-    );
-    testProject.addNote(
-        testProject.createNote(
-            'Something for B', 
-            'random description for B',
-            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-            new Date(1969,4,3), 'dd/MM/yyyy',
-            'normal',
-            ['programming:C', 'functional-programming:Elixir']
-        )
-    );
-    testProject.addNote(
-        testProject.createNote(
-            'Note title for note C', 
-            'random description for C',
-            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-            new Date(1953,7,3), 'dd/MM/yyyy',
-            'normal',
-            ['rock-band:guitar', 'learn-music:read-music-sheet']
-        )
-    );
+    //testProject.addNote(
+    //    testProject.createNote(
+    //        'Note title A', 
+    //        'random description for A',
+    //        'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+    //        new Date(1971,12,1), 'dd/MM/yyyy',
+    //        'normal',
+    //        ['programming:Javascript', 'functional-programming:Haskell']
+    //    )
+    //);
+    //testProject.addNote(
+    //    testProject.createNote(
+    //        'Something for B', 
+    //        'random description for B',
+    //        'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+    //        new Date(1969,4,3), 'dd/MM/yyyy',
+    //        'normal',
+    //        ['programming:C', 'functional-programming:Elixir']
+    //    )
+    //);
+    //testProject.addNote(
+    //    testProject.createNote(
+    //        'Note title for note C', 
+    //        'random description for C',
+    //        'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+    //        new Date(1953,7,3), 'dd/MM/yyyy',
+    //        'normal',
+    //        ['rock-band:guitar', 'learn-music:read-music-sheet']
+    //    )
+    //);
     return testProject;
 }
 

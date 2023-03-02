@@ -128,7 +128,13 @@ function bindNoteListElem(obj, ul) {
             obj.removeNote(note.ID);
         })
         ulArr[i].querySelector('button[data-edit-btn]').addEventListener('click', () => {
-            obj.editNote({ID: note.ID, title: 'Eddited note'});
+            /* Pops up the form with info in that note already in the fields
+            so if you need to change somehting, you just write it up here and press create
+            it should create a new note the passed it in here. to the edit note function
+            of the project.
+            */
+            pubsub.publish('change', 'form-change-state', {projectMethodType: 'edit', obj, note});
+            //obj.editNote({ID: note.ID, title: 'Eddited note'});
         })
 
     })
@@ -140,30 +146,30 @@ function createProjectOperations(obj) {
     const addNoteBtn = document.createElement('button');
     addNoteBtn.textContent = 'Add note +';
     addNoteBtn.addEventListener('click', () => {
-        obj.addNote(
-     obj.createNote(
-            'Note title for note Addtionally', 
-            'random description for additionlally',
-            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-            new Date(1968,7,3), 'dd/MM/yyyy',
-            'normal',
-            ['whatthing', 'something'])
-        )
+         /* Pops up the form with info in that note already in the fields
+         so if you need to change somehting, you just write it up here and press create
+         it should create a new note the passed it in here. to the edit note function
+         of the project. samething here too
+         */
+        pubsub.publish('change', 'form-change-state', {projectMethodType: 'add', obj});
     });
     return addNoteBtn;
 }
 
 function init(projects) {
     const project_list = document.getElementById('project-list');
-    projects.forEach(project => {
+    projects.forEach((project, i) => {
         const li = document.createElement('li');
         li.textContent = project.name;
         li.classList.add('project-list-item');
         li.addEventListener('click', () => {
                 pubsub.publish('read-request', `${project.name}-project-read-request`);
-            });
+        });
         project_list.appendChild(li);
     });
+
+    console.log(project_list.childNodes[0]);
+    project_list.childNodes[0].dispatchEvent(new Event('click'));
 }
 
 function clearContent (node) {

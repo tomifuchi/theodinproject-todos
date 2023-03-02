@@ -139,4 +139,20 @@ function noteImportTest () {
     return 'Note module import successful';
 }
 
-module.exports = {Project, noteImportTest};
+function createNote (title, description, content, dueDate, dueDateformat='dd/MM/yyyy', priority, tags) { 
+    //pubsub.publish('log','createNote', `${this.name} note.js:createNote invoke`); //Unless we learn async, we won't know if the function is sucessfully created or not so this will do for now
+    const state = {
+        title, 
+        description, 
+        content, 
+        dueDate: format(dueDate,  dueDateformat), 
+        priority, 
+        tags: tagModule.createTagList('default-name'), 
+        noteStatus: 'unfinished',
+    };
+    state.tags.addTag(...tags.map(tag => tagModule.createTag.fromStr(tag)));
+
+    return state;
+}
+
+module.exports = {Project, noteImportTest, createNote};
