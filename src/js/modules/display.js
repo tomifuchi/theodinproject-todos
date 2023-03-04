@@ -60,7 +60,14 @@ function render(obj) {
         createProjectOperations(obj),
     );
 }
+
+function renderProjList(projectList) {
+    clearContent(cachedNodes.projectList);
+    createProjectListItem(projectList);
+}
+
 pubsub.subscribe('display','read', 'getData', render);
+pubsub.subscribe('display', 'read', 'getProjectList', renderProjList);
 
 
 //Note list in a project
@@ -156,20 +163,42 @@ function createProjectOperations(obj) {
     return addNoteBtn;
 }
 
-function init(projects) {
-    const project_list = document.getElementById('project-list');
-    projects.forEach((project, i) => {
+function init(projectManager) {
+    createProjectListItem(projectManager.getProjectList());
+
+    console.log(cachedNodes.projectList.childNodes[0]);
+    cachedNodes.projectList.childNodes[0].dispatchEvent(new Event('click'));
+    document.getElementById('project-list-add').addEventListener('click', () => {
+        console.log('add project');
+        const div = document.createElement('div');
+        const txtBox = document.createElement('input');
+        txtBox.setAttribute('type', 'text');
+        const okButton = document.createElement('button');
+        okButton.textContent = 'Ok';
+        okButton.onclick = () => {
+            const projectName = txtBox.value;
+            pubsub.publish('add', 'add-project', projectManager.createProject(projectName));
+            cachedNodes.projectList.removeChild(cachedNodes.projectList.querySelector('div'));
+        }
+        div.appendChild(txtBox);
+        div.appendChild(okButton);
+
+        cachedNodes.projectList.appendChild(div);
+    });
+}
+
+function createProjectListItem(projectList) {
+    projectList.forEach(({project}, i) => {
         const li = document.createElement('li');
         li.textContent = project.name;
         li.classList.add('project-list-item');
         li.addEventListener('click', () => {
-                pubsub.publish('read-request', `${project.name}-project-read-request`);
+            pubsub.publish('read-request', `${project.name}-project-read-request`);
+            pubsub.publish('change', 'form-change-context');
         });
-        project_list.appendChild(li);
+        cachedNodes.projectList.appendChild(li);
     });
 
-    console.log(project_list.childNodes[0]);
-    project_list.childNodes[0].dispatchEvent(new Event('click'));
 }
 
 function clearContent (node) {

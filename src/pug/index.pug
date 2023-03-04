@@ -13,7 +13,7 @@ html(lang="en")
               h2#current-project-title
               section.project-list-container
                   ul#project-list
-                  button Add project
+                  button#project-list-add Add project
         main 
             section#todos-list-container
                 ul#todos-list
@@ -54,7 +54,7 @@ html(lang="en")
                             <label for="unfinised">Unfinished</label>
                             <input type="radio" id="unfinished" value="unfinished" name="note_status" checked>
 
-                        button(type="button" id="create-note-btn") Create note
+                        button(type="button" id="create-note-btn") 
 
         //title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, noteStatus: 'unfinished'
         footer 

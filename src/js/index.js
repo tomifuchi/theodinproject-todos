@@ -144,9 +144,10 @@ require('../scss/style.scss');
 
 const pubsub = require('./modules/pubsub');
 const note   = require('./modules/note');
+const {projectManager} = require('./modules/projectManager');
 const logger = require('./modules/logger');
 const display = require('./modules/display');
-const form = require('./modules/form');
+const form = require('./modules/sub_modules/form');
 
 
 //Html logger
@@ -204,9 +205,9 @@ const inbox = makeTestProject('Inbox');
 const education = makeTestProject('Education');
 const programming = makeTestProject('Programming');
 const somethingElse = makeTestProject('SomethingElse');
-const projects = [inbox,education,programming, somethingElse];
+projectManager.addProject(inbox, education, programming, somethingElse);
 
-display.init(projects);
+display.init(projectManager);
 
 /*
 inbox.addNote(inbox.createNote(

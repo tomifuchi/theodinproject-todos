@@ -1,4 +1,4 @@
-const pubsub = require('./pubsub');
+const pubsub = require('../pubsub');
 
 const createNoteForm = document.getElementById('create-note-form');
 const createNoteBtn = document.getElementById('create-note-btn');
@@ -41,9 +41,16 @@ function submit({projectMethodType, obj, note=null}) {
 }
 
 pubsub.subscribe('form', 'change', 'form-change-state', switchFormState);
+pubsub.subscribe('form', 'change', 'form-change-context', switchContext);
+
+function switchContext() {
+    createNoteBtn.textContent = '';
+    callbackFunctionEvents.clearListeners();
+}
 
 const callbackFunctionEvents = {
     callBacks: [],
+    currentContext: {},
     clearListeners: function () {
         this.callBacks.forEach(f => createNoteBtn.removeEventListener('click', f));
     }
