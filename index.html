@@ -21,20 +21,20 @@
     <main> 
       <section id="todos-list-container">
         <ul id="todos-list"></ul>
-        <button id="add-note">Add note + </button>
+        <button id="add-todo">Add todo + </button>
       </section>
       <section>
-        <form action="" method="post" id="create-note-form">
-          <h2>Note creation</h2>
+        <form action="" method="post" id="create-todo-form">
+          <h2>todo creation</h2>
           <fieldset> 
-            <legend>Note info</legend>
+            <legend>todo info</legend>
             <p>
               <label for="title">Title:</label>
-              <input type="text" id="title" name="note_title" required><span></span>
+              <input type="text" id="title" name="todo_title" required><span></span>
             </p>
             <p>
               <label for="description">Description:</label>
-              <input type="text" id="description" name="note_description" required><span></span>
+              <input type="text" id="description" name="todo_description" required><span></span>
             </p>
             <p>
               <label for="content">Content:</label>
@@ -42,7 +42,7 @@
             </p>
             <p>
               <label for="due-date">Due date:</label>
-              <input type="date" id="due-date" name="note_dueDate" required>
+              <input type="date" id="due-date" name="todo_dueDate" required>
             </p>
             <p> 
               <label for="priority">Priority:</label>
@@ -55,20 +55,20 @@
             <p> 
               <label for="tags">Tags:</label>
               <p>These are space separated, and have syntax of indentifier:topic, example: rockband:guitar, programming:haskell, study:math:</p>
-              <input type="text" id="tags" name="note_tags">
+              <input type="text" id="tags" name="todo_tags">
             </p>
             <p> 
               <p>Status:</p><label for="finished">Finished</label>
-<input type="radio" id="finished" value="finished" name="note_status">
+<input type="radio" id="finished" value="finished" name="todo_status">
 <label for="unfinised">Unfinished</label>
-<input type="radio" id="unfinished" value="unfinished" name="note_status" checked>
+<input type="radio" id="unfinished" value="unfinished" name="todo_status" checked>
             </p>
-            <button type="button" id="create-note-btn"> </button>
+            <button type="button" id="create-todo-btn"> </button>
           </fieldset>
         </form>
       </section>
     </main>
-    <!--title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, noteStatus: 'unfinished'-->
+    <!--title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, todoStatus: 'unfinished'-->
     <footer> 
       <h3>Log from publish/subscribe module:</h3>
       <pre id="log" style="border: 1px solid #ccc;"> </pre>
