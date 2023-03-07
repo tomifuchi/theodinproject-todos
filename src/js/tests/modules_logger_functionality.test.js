@@ -5,7 +5,7 @@ const testLoggerA = loggerModule.Logger('testLoggerA');
 testLoggerA.log('Hello world');
 
 test('Test logging and retreiving logs', () => {
-    expect(testLoggerA.getLog()).toBe('0: Hello world\n');
+    expect(testLoggerA.getLog()).toBe('0: Hello world\n\n');
 });
 
 const testLoggerB = loggerModule.Logger('testLoggerB');

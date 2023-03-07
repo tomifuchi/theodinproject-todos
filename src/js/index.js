@@ -143,62 +143,61 @@
 require('../scss/style.scss');
 
 const pubsub = require('./modules/pubsub');
-const note   = require('./modules/note');
+const {Project}   = require('./modules/project');
 const {projectManager} = require('./modules/projectManager');
-const logger = require('./modules/logger');
+const {Logger} = require('./modules/logger');
+const {Todo} = require('./modules/sub_modules/todo');
 const display = require('./modules/display');
 const form = require('./modules/sub_modules/form');
 
 
 //Html logger
-const htmlLogger = logger.Logger('htmlLogger');
+const htmlLogger = Logger('htmlLogger');
 const logToHtml = (msg) => {
     htmlLogger.log(msg); 
     pubsub.publish('log', 'htmlLogger-logs', htmlLogger.getLog());
 };
 
 //pubsub.subscribe('htmlLogger', 'log', 'createNote', logToHtml);
-pubsub.subscribe('htmlLogger', 'log', 'addNote', logToHtml);
-pubsub.subscribe('htmlLogger', 'log', 'getNoteList', logToHtml);
+pubsub.subscribe('htmlLogger', 'log', 'projectModule-addTodo', logToHtml);
+pubsub.subscribe('htmlLogger', 'log', 'projectModule-getTodoList', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'getNote', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'removeNote', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'editNote', logToHtml);
 
-
 function makeTestProject (name) {
-
-    const testProject = note.Project(name);
-    //testProject.addNote(
-    //    testProject.createNote(
-    //        'Note title A', 
-    //        'random description for A',
-    //        'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-    //        new Date(1971,12,1), 'dd/MM/yyyy',
-    //        'normal',
-    //        ['programming:Javascript', 'functional-programming:Haskell']
-    //    )
-    //);
-    //testProject.addNote(
-    //    testProject.createNote(
-    //        'Something for B', 
-    //        'random description for B',
-    //        'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-    //        new Date(1969,4,3), 'dd/MM/yyyy',
-    //        'normal',
-    //        ['programming:C', 'functional-programming:Elixir']
-    //    )
-    //);
-    //testProject.addNote(
-    //    testProject.createNote(
-    //        'Note title for note C', 
-    //        'random description for C',
-    //        'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-    //        new Date(1953,7,3), 'dd/MM/yyyy',
-    //        'normal',
-    //        ['rock-band:guitar', 'learn-music:read-music-sheet']
-    //    )
-    //);
-    return testProject;
+        const testProject = Project(name);
+        testProject.addTodo(
+            Todo(
+                'Note title A', 
+                'random description for A',
+                'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+                new Date(1971,12,1), 'dd/MM/yyyy',
+                'normal',
+                ['programming:Javascript', 'functional-programming:Haskell']
+            )
+        );
+        testProject.addTodo(
+            Todo(
+                'Something for B', 
+                'random description for B',
+                'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+                new Date(1969,4,3), 'dd/MM/yyyy',
+                'normal',
+                ['programming:C', 'functional-programming:Elixir']
+            )
+        );
+        testProject.addTodo(
+            Todo(
+                'Note title for note C', 
+                'random description for C',
+                'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+                new Date(1953,7,3), 'dd/MM/yyyy',
+                'normal',
+                ['rock-band:guitar', 'learn-music:read-music-sheet']
+            )
+        );
+        return testProject;
 }
 
 const inbox = makeTestProject('Inbox');
@@ -210,7 +209,7 @@ projectManager.addProject(inbox, education, programming, somethingElse);
 display.init(projectManager);
 
 /*
-inbox.addNote(inbox.createNote(
+inbox.addTodo(inbox.createNote(
     'Automaticlly refresh to this shit.', 
     'random description for D',
     'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
@@ -219,7 +218,7 @@ inbox.addNote(inbox.createNote(
     ['rock-band:guitar', 'learn-music:read-music-sheet']
 ));
 
-education.addNote(inbox.createNote(
+education.addTodo(inbox.createNote(
     'Automaticlly refresh to this shit.', 
     'random description for D',
     'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',

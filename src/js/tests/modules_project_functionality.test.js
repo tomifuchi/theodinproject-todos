@@ -1,13 +1,12 @@
 const {format} =  require('date-fns');
-const note   = require('../modules/note');
-const tagModule = require('../modules/sub_modules/tag');
-
+const {Project} = require('../modules/project');
+const {Todo} = require('../modules/sub_modules/todo');
+const {Tag, TagList}= require('../modules/sub_modules/tag');
 
 function makeTestProject (name) {
-
-    const testProject = note.Project(name);
-    testProject.addNote(
-        testProject.createNote(
+    const testProject = Project(name);
+    testProject.addTodo(
+        Todo(
             'Something for A', 
             'random description for A',
             'content: any random content goes here',
@@ -16,8 +15,8 @@ function makeTestProject (name) {
             ['programming:Javascript', 'functional-programming:Haskell']
         )
     );
-    testProject.addNote(
-        testProject.createNote(
+    testProject.addTodo(
+        Todo(
             'Something for B', 
             'random description for B',
             'content: any random content goes here',
@@ -26,8 +25,8 @@ function makeTestProject (name) {
             ['programming:C', 'functional-programming:Elixir']
         )
     );
-    testProject.addNote(
-        testProject.createNote(
+    testProject.addTodo(
+        Todo(
             'Something for C', 
             'random description for C',
             'content: any random content goes here',
@@ -41,7 +40,7 @@ function makeTestProject (name) {
 
 const testProjectA = makeTestProject('testProjectA');
 
-//Testing note functionality
+//Testing todo functionality
 //Variables and configuration for testing
 const resultNoteA = {
     ID: 0,
@@ -50,76 +49,76 @@ const resultNoteA = {
     content: 'content: any random content goes here',
     dueDate: format(new Date(1971, 12, 1), 'dd/MM/yyyy'),
     priority: 'normal',
-    tags: tagModule.createTagList('default-name').addTag(
-        ...['programming:Javascript', 'functional-programming:Haskell','project:testProjectA'].map(i => tagModule.createTag.fromStr(i))
+    tags: TagList('default-name').addTag(
+        ...['programming:Javascript', 'functional-programming:Haskell','project:testProjectA'].map(i => Tag.fromStr(i))
     ),
-    noteStatus: 'unfinished',
+    todoStatus: 'unfinished',
 }
 
 //The tests themselves
-test('Note reading' ,() => {
-    expect(testProjectA.getNote(-1)).toStrictEqual(undefined);
-    expect(testProjectA.getNote(0)).toStrictEqual(resultNoteA);
-    expect(testProjectA.getNote(3)).toStrictEqual(undefined);
+test('Todo reading' ,() => {
+    expect(testProjectA.getTodo(-1)).toStrictEqual(undefined);
+    expect(testProjectA.getTodo(0)).toStrictEqual(resultNoteA);
+    expect(testProjectA.getTodo(3)).toStrictEqual(undefined);
 });
 
-test('Note edditting', () => {
+test('Todo edditting', () => {
     resultNoteA.title = 'Special thing for A*';
 
     //This makes a different
-    testProjectA.editNote({ID: 0, title: 'Special thing for A*'});
+    testProjectA.editTodo({ID: 0, title: 'Special thing for A*'});
     //While this will not because there's no ID for this object.
-    testProjectA.editNote({title: 'HuHueHue something else'});
+    testProjectA.editTodo({title: 'HuHueHue something else'});
 
-    expect(testProjectA.getNote(0)).toStrictEqual(resultNoteA);
+    expect(testProjectA.getTodo(0)).toStrictEqual(resultNoteA);
 });
 
-test('Note removing', () => {
+test('Todo removing', () => {
     //This matters
-    testProjectA.removeNote(0);
+    testProjectA.removeTodo(0);
     //While this does nothing
-    testProjectA.removeNote(-1);
-    expect(testProjectA.getNote(0)).toStrictEqual(undefined);
+    testProjectA.removeTodo(-1);
+    expect(testProjectA.getTodo(0)).toStrictEqual(undefined);
 });
 
 //Between projects
-//Moving notes around projects
+//Moving todos around projects
 const testProjectB = makeTestProject('testProjectB');
 const testProjectC = makeTestProject('testProjectC');
 
 test('Duplicate/Moving between projects', () => {
     //Duplicating
-    testProjectC.duplicateNote(0, testProjectB);
-    expect(testProjectB.getNote(3)).toStrictEqual(
-        {...testProjectC.getNote(0), ID: 3}
+    testProjectC.duplicateTodo(0, testProjectB);
+    expect(testProjectB.getTodo(3)).toStrictEqual(
+        {...testProjectC.getTodo(0), ID: 3}
     );
 
     //Moving
-    testProjectC.moveNote(0, testProjectB);
-    expect(testProjectB.getNote(4)).toStrictEqual({...testProjectB.getNote(3), ID: 4});
-    expect(testProjectC.getNote(0)).toStrictEqual(undefined);
+    testProjectC.moveTodo(0, testProjectB);
+    expect(testProjectB.getTodo(4)).toStrictEqual({...testProjectB.getTodo(3), ID: 4});
+    expect(testProjectC.getTodo(0)).toStrictEqual(undefined);
 });
 
 
 // Old tests
 ////Duplicate notes to projects
 //test('Duplicating note from one project to project(s)', () => {
-//    testProjectB.duplicateNote(0, testProjectA, testProjectC);
-//    expect(testProjectA.getNote(1)).toStrictEqual({...testNoteB, ID: 1});
-//    expect(testProjectC.getNote(1)).toStrictEqual({...testNoteB, ID: 1});
+//    testProjectB.duplicateTodo(0, testProjectA, testProjectC);
+//    expect(testProjectA.getTodo(1)).toStrictEqual({...testNoteB, ID: 1});
+//    expect(testProjectC.getTodo(1)).toStrictEqual({...testNoteB, ID: 1});
 //});
 //
 //test('Duplicating note from itself', () => {
-//    testProjectB.duplicateNote(0, testProjectB);
-//    expect(testProjectB.getNote(2)).toStrictEqual({...testNoteB, ID: 2});
+//    testProjectB.duplicateTodo(0, testProjectB);
+//    expect(testProjectB.getTodo(2)).toStrictEqual({...testNoteB, ID: 2});
 //});
 //
 ////Tagging system
 ////Filtering tag
 ////test('Filtering note from a Project', () => {
-////    testProjectB.editNote({ID: 0, tags: ['UniqueTag']});
-////    testProjectB.editNote({ID: 0, tags: ['UniqueTag']});
-////    testProjectB.editNote({ID: 1, tags: ['UniqueTag']});
+////    testProjectB.editTodo({ID: 0, tags: ['UniqueTag']});
+////    testProjectB.editTodo({ID: 0, tags: ['UniqueTag']});
+////    testProjectB.editTodo({ID: 1, tags: ['UniqueTag']});
 ////    expect(testProjectB.filterByTag('UniqueTag')).toStrictEqual([
 ////        Object.assign({...note.Project.createTestNote(), title: 'Something for B', ID: 0, tags: ['UniqueTag']}),
 ////        Object.assign({...note.Project.createTestNote(), title: 'Something for C', ID: 1, tags: ['UniqueTag']}),
@@ -128,8 +127,8 @@ test('Duplicate/Moving between projects', () => {
 ////
 //////Check duplicate tags
 ////const testProjectD = note.Project('testProjectD');
-////testProjectD.addNote({...note.Project.createTestNote(), title: 'Something for D'});
-////testProjectD.editNote({ID: 0, tags: ['tag A', 'tag A']});
+////testProjectD.addTodo({...note.Project.createTestNote(), title: 'Something for D'});
+////testProjectD.editTodo({ID: 0, tags: ['tag A', 'tag A']});
 ////
 ////test('Checking for duplicated tags', () => {
 ////    expect(testProjectD.checkForTag(0, 'tag A')).toBe(true);

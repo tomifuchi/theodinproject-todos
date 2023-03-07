@@ -18,7 +18,7 @@ function applyClass(node, styleClass) {
 note is invoked should we wanted to read the log subscribe to these channel
 'log', 'createNote'
 'log', 'addNote'
-'log', 'getNoteList'
+'log', 'getTodoList'
 'log', 'getNote'
 'log', 'removeNote' 
 'log', 'editNote'
@@ -30,6 +30,30 @@ function renderHtmlLogger(msg) {
 }
 pubsub.subscribe('display','log','htmlLogger-logs', renderHtmlLogger);
 
+/*
+    Next version
+    If we look here, by ulitizing pubsub module, we can infact get our module
+    to talk to each other without directly make them part of each other module.
+    But just through publish and subscribe with arguments or callback functions to
+    reflect what our current object is displaying at the moment and what state it is in.
+
+    The idea for the next iteration is this for this module specifically.
+    Figure out a way to manage display object state to the frontend.
+
+    One way I can think of is this
+
+    render(obj, target, displayObj), this render/display the object to
+    the targetElement using displayObj function. We can then paste this anywhere we wanted,
+    it should append to target not overwrite it. Overwriting or clearing a node we have
+    a function for that.
+
+    updateState(obj) will return the object we wanted to update.
+
+    By somehow either have an object that manages these object target displayObj, or something.
+    But if pulled off we can use this framework to build front end with these....Umm
+    I call them comps. We can have an object that can render in multiple places if we wanted to, 
+    with display function we wanted to.
+*/
 /* 
     Render function that runs whenever we:
     * Click on a project, refresh the whole page
@@ -50,13 +74,13 @@ pubsub.subscribe('display','log','htmlLogger-logs', renderHtmlLogger);
 
 function render(obj) {
     //console.log('render received:', obj);
-    //console.log(obj.getNoteList());
+    //console.log(obj.getTodoList());
     updateTextContent(cachedNodes.curentTitle, `Project/${obj.name}`);
     //applyClass(obj.listItem, 'active');
 
     clearContent(cachedNodes.todosListContainer);
     addToElem(cachedNodes.todosListContainer, 
-        bindNoteListElem(obj, createNoteListElem(obj.getNoteList())),
+        bindNoteListElem(obj, createTodoListElem(obj.getTodoList())),
         createProjectOperations(obj),
     );
 }
@@ -66,73 +90,73 @@ function renderProjList(projectList) {
     createProjectListItem(projectList);
 }
 
-pubsub.subscribe('display','read', 'getData', render);
-pubsub.subscribe('display', 'read', 'getProjectList', renderProjList);
+pubsub.subscribe('display','read', 'projectModule-getData', render);
+pubsub.subscribe('display', 'read', 'projectManagerModule-getData', renderProjList);
 
 
 //Note list in a project
-function createNoteListItemElem(note) {
-    const note_item = document.createElement('li');
-    note_item.classList.add('todos-list-item');
+function createTodoListItemElem(todo) {
+    const todo_item = document.createElement('li');
+    todo_item.classList.add('todos-list-item');
 
     const title = document.createElement('h3'); 
-    title.textContent = note.title;
-    note_item.appendChild(title);
+    title.textContent = todo.title;
+    todo_item.appendChild(title);
 
     const description = document.createElement('h4');
-    description.textContent = note.description;
-    note_item.appendChild(description);
+    description.textContent = todo.description;
+    todo_item.appendChild(description);
 
     const content = document.createElement('p');
-    content.textContent = note.content;
-    note_item.appendChild(content);
+    content.textContent = todo.content;
+    todo_item.appendChild(content);
 
     const dueDate = document.createElement('p');
-    dueDate.textContent = note.dueDate;
-    note_item.appendChild(dueDate);
+    dueDate.textContent = todo.dueDate;
+    todo_item.appendChild(dueDate);
 
-    note_item.classList.add((note.priority == 'normal' ? 'normal':'urgent'));
+    todo_item.classList.add((todo.priority == 'normal' ? 'normal':'urgent'));
 
     const tagList = document.createElement('ul');
-    note.tags.getTagList().forEach(tag => {
+    todo.tags.getTagList().forEach(tag => {
         const tagListItem = document.createElement('li');
         tagListItem.appendChild(document.createTextNode(tag.getAsStr()));
         tagList.appendChild(tagListItem);
     });
-    note_item.appendChild(tagList);
+    todo_item.appendChild(tagList);
 
     const noteStatus = document.createElement('p');
-    noteStatus.textContent = note.noteStatus;
-    note_item.appendChild(noteStatus);
+    noteStatus.textContent = todo.noteStatus;
+    todo_item.appendChild(noteStatus);
 
     const delButton = document.createElement('button');
     delButton.textContent = 'Delete note';
     delButton.setAttribute('data-del-btn', '');
-    note_item.appendChild(delButton);
+    todo_item.appendChild(delButton);
 
     const editButton = document.createElement('button');
     editButton.textContent = 'Edit note';
     editButton.setAttribute('data-edit-btn', '');
-    note_item.appendChild(editButton);
+    todo_item.appendChild(editButton);
 
-    return note_item;
+    return todo_item;
 }
 
 //If changes made then renders the list.
-function createNoteListElem (noteList) {
+function createTodoListElem (noteList) {
     const ul = document.createElement('ul');
     ul.setAttribute('id', 'todos-list');
     noteList.forEach(note => {
-        ul.appendChild(createNoteListItemElem(note));
+        ul.appendChild(createTodoListItemElem(note));
     })
     return ul;
 }
 
 function bindNoteListElem(obj, ul) {
     const ulArr = [...ul.childNodes];
-    (obj.getNoteList()).forEach((note,i) => {
+    (obj.getTodoList()).forEach((todo,i) => {
         ulArr[i].querySelector('button[data-del-btn]').addEventListener('click', () => {
-            obj.removeNote(note.ID);
+            obj.removeTodo(todo.ID);
         })
         ulArr[i].querySelector('button[data-edit-btn]').addEventListener('click', () => {
             /* Pops up the form with info in that note already in the fields
@@ -140,7 +164,7 @@ function bindNoteListElem(obj, ul) {
             it should create a new note the passed it in here. to the edit note function
             of the project.
             */
-            pubsub.publish('change', 'form-change-state', {projectMethodType: 'edit', obj, note});
+            pubsub.publish('change', 'form-change-state', {projectMethodType: 'edit', obj, todo});
             //obj.editNote({ID: note.ID, title: 'Eddited note'});
         })
 

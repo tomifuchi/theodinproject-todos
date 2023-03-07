@@ -1,11 +1,10 @@
 //Taggings system to work with note, but it can be repurpose to work with anything
-
 const tagProto = {
     getAsStr: function () {return `${this.identifier}:${this.topic}`},
     getAsArr: function () {return [this.identifier, this.topic]},
 };
 
-function createTag(identifier = 'anything', topic = 'default') {
+function Tag(identifier = 'anything', topic = 'default') {
     const state = {identifier, topic};
     return Object.assign(
         Object.create(tagProto),
@@ -13,15 +12,15 @@ function createTag(identifier = 'anything', topic = 'default') {
     );
 }
 
-createTag.fromStr = function (str) {
+Tag.fromStr = function (str) {
     let [identifier, topic] = str.split(':');
 
-    if (topic === undefined) {
+    if (topic === undefined && identifier !== undefined) {
         topic = identifier;
         identifier = undefined;
     }
 
-    return createTag(identifier, topic);
+    return Tag(identifier, topic);
 }
 
 const tagListProto = {
@@ -44,7 +43,7 @@ const tagListProto = {
     }
 }
 
-function createTagList(name) {
+function TagList(name) {
     const state = {name, _tagList: []};
 
     return Object.assign(
@@ -53,10 +52,12 @@ function createTagList(name) {
     );
 }
 
+/*
 const tagRecordProto = {
     getAsStr: function () {return `${this.identifier}:${this.topic}#${this.ID}`},
     getAsArr: function () {return [this.identifier, this.topic, this.ID]},
 };
+*/
 
 /* 
     This situation below proves to me that
@@ -175,4 +176,4 @@ function TagRecord(name) {
 const todoTagRecord = TagRecord('todos-tag-record');
 */
 
-module.exports = {createTag, createTagList};
+module.exports = {Tag, TagList};

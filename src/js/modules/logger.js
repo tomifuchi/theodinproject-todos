@@ -1,5 +1,3 @@
-const pubsub = require('./pubsub');
-
 function Logger(name) {
     let logs = '';
     const state = {

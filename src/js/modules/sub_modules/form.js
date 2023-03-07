@@ -1,14 +1,15 @@
 const pubsub = require('../pubsub');
+const {Todo} = require('./todo');
 
-const createNoteForm = document.getElementById('create-note-form');
-const createNoteBtn = document.getElementById('create-note-btn');
+const createTodoForm = document.getElementById('create-todo-form');
+const createTodoBtn = document.getElementById('create-todo-btn');
 //Set minimum for today min in form
-createNoteForm.querySelector('#due-date').min = new Date().toISOString().split("T")[0];
+createTodoForm.querySelector('#due-date').min = new Date().toISOString().split("T")[0];
 
-function submit({projectMethodType, obj, note=null}) {
-    const q = queryForm(createNoteForm);
-    if(createNoteForm.reportValidity()){
-            const newNote = obj.createNote(
+function submit({projectMethodType, obj, todo=null}) {
+    const q = queryForm(createTodoForm);
+    if(createTodoForm.reportValidity()){
+            const newTodo = Todo(
                 q('#title'),
                 q('#description'),
                 q('#content'),
@@ -18,7 +19,7 @@ function submit({projectMethodType, obj, note=null}) {
 
                     This part is really important.
 
-                    Note: The displayed date format will differ from the actual value — 
+                    Todo: The displayed date format will differ from the actual value — 
                     the displayed date is formatted based on the locale of the user's browser, 
                     but the parsed value is always formatted yyyy-mm-dd.
                 */
@@ -29,14 +30,14 @@ function submit({projectMethodType, obj, note=null}) {
             );
             switch(projectMethodType) {
                 case 'add':
-                    obj.addNote(newNote);       
+                    obj.addTodo(newTodo);       
                     break;
                 case 'edit':
-                    obj.editNote({ID: note.ID, ...newNote});
+                    obj.editTodo({ID: todo.ID, ...newTodo});
                     break;
             }
 
-            createNoteForm.reset(); //Reset the form after submit
+            createTodoForm.reset(); //Reset the form after submit
     }
 }
 
@@ -44,7 +45,7 @@ pubsub.subscribe('form', 'change', 'form-change-state', switchFormState);
 pubsub.subscribe('form', 'change', 'form-change-context', switchContext);
 
 function switchContext() {
-    createNoteBtn.textContent = '';
+    createTodoBtn.textContent = '';
     callbackFunctionEvents.clearListeners();
 }
 
@@ -52,28 +53,27 @@ const callbackFunctionEvents = {
     callBacks: [],
     currentContext: {},
     clearListeners: function () {
-        this.callBacks.forEach(f => createNoteBtn.removeEventListener('click', f));
+        this.callBacks.forEach(f => createTodoBtn.removeEventListener('click', f));
     }
 }
 
-function switchFormState({projectMethodType, obj, note=null}) {
+function switchFormState({projectMethodType, obj, todo=null}) {
     if(callbackFunctionEvents.callBacks.length > 0)
         callbackFunctionEvents.clearListeners();
 
     switch(projectMethodType) {
         case 'add':
-            createNoteBtn.textContent = 'Add';
+            createTodoBtn.textContent = 'Add';
             break;
         case 'edit':
-            createNoteBtn.textContent = 'Edit';
+            createTodoBtn.textContent = 'Edit';
             break;
     }
-    const currentCallBack = submit.bind(obj, {projectMethodType, obj, note});
+    const currentCallBack = submit.bind(obj, {projectMethodType, obj, todo});
     callbackFunctionEvents.callBacks.push(currentCallBack);
 
-    createNoteBtn.addEventListener('click', currentCallBack);
+    createTodoBtn.addEventListener('click', currentCallBack);
 }
-
 
 function queryForm(form) {
     return (query) => form.querySelector(query).value;
