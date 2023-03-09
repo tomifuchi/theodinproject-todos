@@ -14,10 +14,10 @@ $testColor: #00202e, #003f5c, #2c4875, #8a508f, #bc5090, #ff6361, #ff8531, #ffa6
 
 //General resets
 body {
-    @extend %reset-margin-padding
+    @extend %reset-margin-padding;
 }
 
 
-h2,h3 {
-    @extend %reset-margin-padding
+h2, h3, ul, li{
+    @extend %reset-margin-padding;
 }

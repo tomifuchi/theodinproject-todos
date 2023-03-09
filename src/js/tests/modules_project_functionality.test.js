@@ -1,7 +1,7 @@
 const {format} =  require('date-fns');
 const {Project} = require('../modules/project');
-const {Todo} = require('../modules/sub_modules/todo');
-const {Tag, TagList}= require('../modules/sub_modules/tag');
+const {Todo} = require('../modules/sub_modules/project/todo');
+const {Tag, TagList}= require('../modules/sub_modules/project/tag');
 
 function makeTestProject (name) {
     const testProject = Project(name);

@@ -1,4 +1,4 @@
-const pubsub = require('../pubsub');
+const pubsub = require('../../pubsub');
 const {format} = require('date-fns');
 const {Tag, TagList} = require('./tag');
 

@@ -140,15 +140,20 @@
     let's think simple first, typing identifier:topic chain this together to nail down
     the search. That's it.
 */
+document.getElementsByClassName('mobile-btn')[0].onclick = () => {
+    document.getElementsByTagName('nav')[0].classList.toggle('active');
+    document.body.classList.toggle('fixed');
+}
+
 require('../scss/style.scss');
 
 const pubsub = require('./modules/pubsub');
 const {Project}   = require('./modules/project');
 const {projectManager} = require('./modules/projectManager');
 const {Logger} = require('./modules/logger');
-const {Todo} = require('./modules/sub_modules/todo');
+const {Todo} = require('./modules/sub_modules/project/todo');
 const display = require('./modules/display');
-const form = require('./modules/sub_modules/form');
+const form = require('./modules/sub_modules/display/form');
 
 
 //Html logger

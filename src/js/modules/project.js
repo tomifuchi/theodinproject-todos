@@ -1,6 +1,6 @@
 //Modules
 const pubsub = require('./pubsub');
-const {Tag} = require('./sub_modules/tag');
+const {Tag} = require('./sub_modules/project/tag');
 //Sub modules
 function Project(name) {
 

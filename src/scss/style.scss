@@ -4,6 +4,21 @@
 body {
     @extend %reset-margin-padding;
     font-size: $font-size;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+    @include flex($direction: column);
+}
+
+header {
+    flex: 0;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    flex: 0;
 }
 
 %header-footer-settings {
@@ -11,48 +26,99 @@ body {
     color: white;
 }
 
+$content-padding: 20px;
+
 header {
     @extend %header-footer-settings;
-    @include flex($direction: column, $align: center);
-
-
-    nav {
-    }
+    @include flex($direction: row, $align: center);
 
     .logo {
+        flex: 1;
         font-family: 'press-start-2p';
-        span {
-            border: 1px solid white;
-        }
+        padding: $content-padding;
+        text-align: center;
     }
 
-    ul {
-        @extend %reset-margin-padding;
+    //hambuger button css only
+    .mobile-btn {
+        height: 30px;
+        width: 30px;
+        z-index: 3;
+        cursor: pointer;
+        border: 1px solid #000;
+        background-color: #fff;
+    }
 
-        li {
-            @extend %reset-margin-padding;
-        }
+    nav.active {
+        transform: translateX(0);
+    }
+
+    nav {
+        position: fixed;
+        @include flex($direction: column, $align: center, $justify: center);
+        width: 100%;
+        height: 100%;
+        inset: 0;
+        transform: translateX(-100%);
+        color: black;
+        background-color: white;
+        border: 1px solid #000;
+        z-index: 2;
     }
 }
+    .fixed {
+        position: fixed;
+        z-index: 1;
+    }
+
+
 
 main {
-    #todos-list-container{
-        @include flex($direction: column, $align: center);
+    padding: $content-padding;
 
-        button {
-            background-color: transparent;
-            width: 100%;
-            padding: 10px;
-            border: 1px solid black;
+    #todos-list-container {
+        @include flex($direction: column, $align: center);
+        gap: 10px
+    }
+
+    #todos-list{
+        @include flex($direction: column, $align: center);
+        gap: 10px;
+    }
+
+
+    .todos-list-item {
+        padding: 10px;
+        border: 1px solid #000;
+
+        &-ops-list {
+            @include flex($direction: column, $align: center);
+            gap: 7px;
         }
     }
-    ul {
-        @extend %reset-margin-padding;
+
+    button {
+        background-color: transparent;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid black;
+    }
+
+    .todos-list-item:hover, button:hover {
+        box-shadow: 1px 1px black;
+    }
+
+    //Form
+    #create-todo-form {
+        p {
+            @include flex($direction: column);
+        }
     }
 }
 
 footer {
     @extend %header-footer-settings;
+    padding: $content-padding;
 }
 
 #log {

@@ -1,9 +1,13 @@
 const pubsub = require("./pubsub");
 
+//Submodules
+const form = require('./sub_modules/display/form');
+
 const cachedNodes = {
     curentTitle: document.getElementById('current-project-title'),
     projectList: document.getElementById('project-list'),
     todosListContainer: document.getElementById('todos-list-container'),
+    formSection: document.getElementById('form-section'),
 }
 
 function updateTextContent(node, data){
@@ -78,6 +82,7 @@ function render(obj) {
     updateTextContent(cachedNodes.curentTitle, `Project/${obj.name}`);
     //applyClass(obj.listItem, 'active');
 
+    clearContent(cachedNodes.formSection);
     clearContent(cachedNodes.todosListContainer);
     addToElem(cachedNodes.todosListContainer, 
         bindNoteListElem(obj, createTodoListElem(obj.getTodoList())),
@@ -129,15 +134,20 @@ function createTodoListItemElem(todo) {
     noteStatus.textContent = todo.noteStatus;
     todo_item.appendChild(noteStatus);
 
+    const todoOpsList = document.createElement('ul');
+    todoOpsList.setAttribute('class', 'todos-list-item-ops-list');
+
     const delButton = document.createElement('button');
     delButton.textContent = 'Delete note';
     delButton.setAttribute('data-del-btn', '');
-    todo_item.appendChild(delButton);
+    todoOpsList.appendChild(document.createElement('li').appendChild(delButton));
 
     const editButton = document.createElement('button');
     editButton.textContent = 'Edit note';
     editButton.setAttribute('data-edit-btn', '');
-    todo_item.appendChild(editButton);
+    todoOpsList.appendChild(document.createElement('li').appendChild(editButton));
+
+    todo_item.appendChild(todoOpsList);
 
     return todo_item;
 }
@@ -164,8 +174,7 @@ function bindNoteListElem(obj, ul) {
             it should create a new note the passed it in here. to the edit note function
             of the project.
             */
-            pubsub.publish('change', 'form-change-state', {projectMethodType: 'edit', obj, todo});
-            //obj.editNote({ID: note.ID, title: 'Eddited note'});
+            pubsub.publish('change', 'edit-form', {obj, todo, target: ulArr[i]});
         })
 
     })
@@ -182,7 +191,7 @@ function createProjectOperations(obj) {
          it should create a new note the passed it in here. to the edit note function
          of the project. samething here too
          */
-        pubsub.publish('change', 'form-change-state', {projectMethodType: 'add', obj});
+        pubsub.publish('create', 'create-form', {obj, target: cachedNodes.formSection});
     });
     return addNoteBtn;
 }
@@ -218,7 +227,6 @@ function createProjectListItem(projectList) {
         li.classList.add('project-list-item');
         li.addEventListener('click', () => {
             pubsub.publish('read-request', `${project.name}-project-read-request`);
-            pubsub.publish('change', 'form-change-context');
         });
         cachedNodes.projectList.appendChild(li);
     });
