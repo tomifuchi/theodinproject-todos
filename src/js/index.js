@@ -205,14 +205,16 @@ function makeTestProject (name) {
         return testProject;
 }
 
-const inbox = makeTestProject('Inbox');
-const education = makeTestProject('Education');
-const programming = makeTestProject('Programming');
-const somethingElse = makeTestProject('SomethingElse');
-projectManager.addProject(inbox, education, programming, somethingElse);
-
+//const projectManager = localStorage.getItem('projectManager');
+//if(projectManager == null) {
+    const inbox = makeTestProject('Inbox');
+    const education = makeTestProject('Education');
+    const programming = makeTestProject('Programming');
+    const somethingElse = makeTestProject('SomethingElse');
+    projectManager.addProject(inbox, education, programming, somethingElse);
+//    localStorage.setItem('projectManager', projectManager);
+//}
 display.init(projectManager);
-
 /*
 inbox.addTodo(inbox.createNote(
     'Automaticlly refresh to this shit.', 

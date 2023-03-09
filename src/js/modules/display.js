@@ -1,7 +1,8 @@
 const pubsub = require("./pubsub");
 
 //Submodules
-const form = require('./sub_modules/display/form');
+require('./sub_modules/display/form');
+const {clearNodeChilds, addToElem} = require('./sub_modules/display/domUtil');
 
 const cachedNodes = {
     curentTitle: document.getElementById('current-project-title'),
@@ -82,19 +83,17 @@ function render(obj) {
     updateTextContent(cachedNodes.curentTitle, `Project/${obj.name}`);
     //applyClass(obj.listItem, 'active');
 
-    clearContent(cachedNodes.formSection);
-    clearContent(cachedNodes.todosListContainer);
+    clearNodeChilds(cachedNodes.formSection);
+    clearNodeChilds(cachedNodes.todosListContainer);
     addToElem(cachedNodes.todosListContainer, 
         bindNoteListElem(obj, createTodoListElem(obj.getTodoList())),
         createProjectOperations(obj),
     );
 }
-
 function renderProjList(projectList) {
-    clearContent(cachedNodes.projectList);
+    clearNodeChilds(cachedNodes.projectList);
     createProjectListItem(projectList);
 }
-
 pubsub.subscribe('display','read', 'projectModule-getData', render);
 pubsub.subscribe('display', 'read', 'projectManagerModule-getData', renderProjList);
 
@@ -231,20 +230,6 @@ function createProjectListItem(projectList) {
         cachedNodes.projectList.appendChild(li);
     });
 
-}
-
-function clearContent (node) {
-    if(node.hasChildNodes()){
-        [...node.childNodes].forEach((child) => {
-             node.removeChild(child)
-        });
-    }
-}
-
-function addToElem(target, ...nodes) {
-    nodes.forEach(node => {
-        target.appendChild(node);
-    });
 }
 
 module.exports = {init};

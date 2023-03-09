@@ -28,11 +28,9 @@ const projectManager = {
     getProjectList: function () {
         return this.projects;
     },
-    importProject: function() {
-        
+    importProjectManager: function(importedProjectManager) {
     },
-    exportProject: function (){
-
+    exportProjectManager: function (){
     },
 };
 

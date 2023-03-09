@@ -1,12 +1,13 @@
 const {format, parse} = require('date-fns');
 const pubsub = require('../../pubsub');
+const {clearNodeChilds, queryPropVal, queryProp} = require('./domUtil');
 const {Todo} = require('../project/todo');
 
 pubsub.subscribe('form', 'change', 'edit-form', editTodoFromForm);
 pubsub.subscribe('form', 'create', 'create-form', createTodoFromForm);
 
 function editTodoFromForm({obj, todo, target}) {
-    clearContent(target);
+    clearNodeChilds(target);
     const form = createFormElement();
     parseTodo(form, todo);
     form.querySelector('#create-todo-btn').textContent = 'Edit todo';
@@ -20,7 +21,7 @@ function editTodoFromForm({obj, todo, target}) {
 }
 
 function parseForm(form) {
-    const q = queryFormValue(form);
+    const q = queryPropVal(form);
     return Todo(
         q('#title'),
         q('#description'),
@@ -43,7 +44,7 @@ function parseForm(form) {
 }
 
 function parseTodo(form, todo) {
-    const q = queryFormProp(form);
+    const q = queryProp(form);
     
     q('#title').value = todo.title;
     q('#description').value = todo.description;
@@ -62,8 +63,7 @@ function createTodoFromForm({obj, target}) {
             if(form.reportValidity()){
                 const newTodo = parseForm(form);
                 obj.addTodo(newTodo);
-                clearContent(target);
-                currentlyOpenedForm = false;
+                clearNodeChilds(target);
             }
         });
         target.appendChild(form);
@@ -127,22 +127,7 @@ function createFormElement() {
     return form;
 }
 
-function queryFormValue(form) {
-    return (query) => form.querySelector(query).value;
-}
-
 function processTags(str) {
     return str.split(' ');
 }
 
-function queryFormProp(form) {
-    return (attrib) => form.querySelector(attrib);
-}
-
-function clearContent (node) {
-    if(node.hasChildNodes()){
-        [...node.childNodes].forEach((child) => {
-             node.removeChild(child)
-        });
-    }
-}
