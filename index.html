@@ -9,6 +9,7 @@
   <script defer src="main.js"></script></head>
   <body> 
     <header> 
+      <div class="mobile-btn"></div>
       <div class="logo">/** Todos **/</div>
       <nav>
         <h2 id="current-project-title"></h2>
@@ -23,49 +24,43 @@
         <ul id="todos-list"></ul>
         <button id="add-todo">Add todo + </button>
       </section>
-      <section>
-        <form action="" method="post" id="create-todo-form">
-          <h2>todo creation</h2>
-          <fieldset> 
-            <legend>todo info</legend>
-            <p>
-              <label for="title">Title:</label>
-              <input type="text" id="title" name="todo_title" required><span></span>
-            </p>
-            <p>
-              <label for="description">Description:</label>
-              <input type="text" id="description" name="todo_description" required><span></span>
-            </p>
-            <p>
-              <label for="content">Content:</label>
-              <textarea rows="10" cols="50" id="content" maxlength="1000" required></textarea>
-            </p>
-            <p>
-              <label for="due-date">Due date:</label>
-              <input type="date" id="due-date" name="todo_dueDate" required>
-            </p>
-            <p> 
-              <label for="priority">Priority:</label>
-              <select id="priority">
-                <option value="normal">Normal </option>
-                <option value="moderate">Moderate</option>
-                <option value="urgent">Urgent</option>
-              </select>
-            </p>
-            <p> 
-              <label for="tags">Tags:</label>
-              <p>These are space separated, and have syntax of indentifier:topic, example: rockband:guitar, programming:haskell, study:math:</p>
-              <input type="text" id="tags" name="todo_tags">
-            </p>
-            <p> 
-              <p>Status:</p><label for="finished">Finished</label>
-<input type="radio" id="finished" value="finished" name="todo_status">
-<label for="unfinised">Unfinished</label>
-<input type="radio" id="unfinished" value="unfinished" name="todo_status" checked>
-            </p>
-            <button type="button" id="create-todo-btn"> </button>
-          </fieldset>
-        </form>
+      <section id="form-section">
+        <!--form(action="" method="post" id="create-todo-form")-->
+        <!--    h2 todo creation-->
+        <!--    fieldset -->
+        <!--        legend todo info-->
+        <!--        p-->
+        <!--            label(for="title") Title:-->
+        <!--            input(type="text" id="title" name="todo_title" required)-->
+        <!--            span-->
+        <!--        p-->
+        <!--            label(for="description") Description:-->
+        <!--            input(type="text" id="description" name="todo_description" required)-->
+        <!--            span-->
+        <!--        p-->
+        <!--            label(for="content") Content:-->
+        <!--            textarea(rows="5" id="content" maxlength="1000" required)-->
+        <!--        p-->
+        <!--            label(for="due-date") Due date:-->
+        <!--            input(type="date" id="due-date" name="todo_dueDate" required)-->
+        <!--        p -->
+        <!--            label(for="priority") Priority:-->
+        <!--            select(id="priority")-->
+        <!--                option(value="normal") Normal -->
+        <!--                option(value="moderate") Moderate-->
+        <!--                option(value="urgent") Urgent-->
+        <!--        p -->
+        <!--            label(for="tags") Tags -->
+        <!--            p These are space separated, and have syntax of indentifier:topic, example: rockband:guitar, programming:haskell, study:math:-->
+        <!--            input(type="text" id="tags" name="todo_tags")-->
+        <!--        p -->
+        <!--            p Status:-->
+        <!--            label(for="finished") Finished-->
+        <!--            input(type="radio" id="finished" value="finished" name="todo_status")-->
+        <!--            label(for="unfinised") Unfinished-->
+        <!--            input(type="radio" id="unfinished" value="unfinished" name="todo_status" checked)-->
+        <!--        p-->
+        <!--            button(type="button" id="create-todo-btn") -->
       </section>
     </main>
     <!--title, description, content, dueDate: format(dueDate,  dueDateformat), priority, tags, todoStatus: 'unfinished'-->
