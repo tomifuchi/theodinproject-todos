@@ -170,50 +170,52 @@ pubsub.subscribe('htmlLogger', 'log', 'projectModule-getTodoList', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'removeNote', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'editNote', logToHtml);
 
-function makeTestProject (name) {
-        const testProject = Project(name);
-        testProject.addTodo(
-            Todo(
-                'Note title A', 
-                'random description for A',
-                'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-                new Date(1971,12,1), 'dd/MM/yyyy',
-                'normal',
-                ['programming:Javascript', 'functional-programming:Haskell']
-            )
-        );
-        testProject.addTodo(
-            Todo(
-                'Something for B', 
-                'random description for B',
-                'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-                new Date(1969,4,3), 'dd/MM/yyyy',
-                'normal',
-                ['programming:C', 'functional-programming:Elixir']
-            )
-        );
-        testProject.addTodo(
-            Todo(
-                'Note title for note C', 
-                'random description for C',
-                'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-                new Date(1953,7,3), 'dd/MM/yyyy',
-                'normal',
-                ['rock-band:guitar', 'learn-music:read-music-sheet']
-            )
-        );
-        return testProject;
+function createRandomTodos() {
+    return[
+        Todo(
+            'Note title A', 
+            'random description for A',
+            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+            new Date(1971,12,1), 'dd/MM/yyyy',
+            'normal',
+            ['programming:Javascript', 'functional-programming:Haskell']
+        ),
+        Todo(
+            'Something for B', 
+            'random description for B',
+            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+            new Date(1969,4,3), 'dd/MM/yyyy',
+            'normal',
+            ['programming:C', 'functional-programming:Elixir']
+        ),
+        Todo(
+            'Note title for note C', 
+            'random description for C',
+            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
+            new Date(1953,7,3), 'dd/MM/yyyy',
+            'normal',
+            ['rock-band:guitar', 'learn-music:read-music-sheet']
+        ),
+    ]
 }
 
-//const projectManager = localStorage.getItem('projectManager');
-//if(projectManager == null) {
-    const inbox = makeTestProject('Inbox');
-    const education = makeTestProject('Education');
-    const programming = makeTestProject('Programming');
-    const somethingElse = makeTestProject('SomethingElse');
-    projectManager.addProject(inbox, education, programming, somethingElse);
-//    localStorage.setItem('projectManager', projectManager);
-//}
+const exportedProjects = localStorage.getItem('exported-projects');
+if(exportedProjects == null) {
+   console.log('none');
+    projectManager.addProject(
+        projectManager.createProject('inbox'), 
+        projectManager.createProject('education'), 
+        projectManager.createProject('programming'), 
+        projectManager.createProject('somethingElse')
+    );
+    projectManager.getProjectList().forEach(({project}) => {
+        createRandomTodos().forEach(todo => project.addTodo(todo))
+    });
+}
+else {
+    console.log('LOADED!');
+    projectManager.reloadProjects(exportedProjects);
+}
 display.init(projectManager);
 /*
 inbox.addTodo(inbox.createNote(

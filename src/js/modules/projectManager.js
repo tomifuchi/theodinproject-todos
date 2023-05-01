@@ -1,4 +1,6 @@
 const {Project} = require('./project');
+const {Todo} = require('./sub_modules/project/todo');
+const {parse} = require('date-fns')
 const pubsub = require('./pubsub');
 
 const projectManager = {
@@ -6,15 +8,20 @@ const projectManager = {
     projects: [],
     addProject: function (...projs) {
         projs.forEach(proj => this.projects.push({ID: this.ID++, project: proj}));
+        pubsub.publish('save', 'projectManagerModule-saveChanges');
     },
     createProject: function (name) {
         return Project(name);
     },
     removeProject: function (ID) {
-        return this.projects.splice(this.getProjectIndex(ID), 1);
+        const removedProject = this.projects.splice(this.getProjectIndex(ID), 1);
+        pubsub.publish('save', 'projectManagerModule-saveChanges');
+        return removedProject;
     },
     clearProjectList: function () {
-        return this.projects.splice(0, this.projects.length);
+        const removedProjects = this.projects.splice(0, this.projects.length);
+        pubsub.publish('save', 'projectManagerModule-saveChanges');
+        return removedProjects
     },
     getProjectByName: function(name) {
         return this.projects.filter(project => project.name == name);
@@ -28,11 +35,42 @@ const projectManager = {
     getProjectList: function () {
         return this.projects;
     },
-    importProjectManager: function(importedProjectManager) {
+    reloadProjects: function(importedProjects) {
+        const parsedImport = (JSON.parse(importedProjects)).map(project => JSON.parse(project));
+        console.log(parsedImport);
+        parsedImport.forEach((importProject, index) => {
+            console.log(importProject);
+            this.addProject(this.createProject(importProject.name));
+            const {project} = this.getProjectById(index);
+            importProject.todoList.forEach(todo => {
+                project.addTodo(
+                    Todo(
+                        todo.title,
+                        todo.description,
+                        todo.content,
+                        parse(todo.dueDate, 'dd/MM/yyyy', new Date()),
+                        'dd/MM/yyyy',
+                        todo.priority,
+                        todo.tags._tagList.map(tag => `${tag.identifier}:${tag.topic}`)
+                    )
+                );
+            });
+        });
     },
-    exportProjectManager: function (){
+    saveProjects: function (){
+        const exportedProjects = [];
+        this.projects.forEach(proj => {
+            exportedProjects.push(proj.project.getState());
+        });
+        localStorage.setItem('exported-projects', JSON.stringify(exportedProjects));
     },
 };
+
+pubsub.subscribe('projectManager', 'save', 'projectManagerModule-saveChanges', saveChanges);
+function saveChanges() {
+    console.log('save Changes!');
+    projectManager.saveProjects();
+}
 
 function getData() {
     pubsub.publish('read', 'projectManagerModule-getData', projectManager.getProjectList());

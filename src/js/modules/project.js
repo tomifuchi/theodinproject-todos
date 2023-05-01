@@ -1,7 +1,10 @@
 //Modules
 const pubsub = require('./pubsub');
-const {Tag} = require('./sub_modules/project/tag');
+const {parse} = require('date-fns');
 //Sub modules
+const {Todo} = require('./sub_modules/project/todo');
+const {Tag} = require('./sub_modules/project/tag');
+
 function Project(name) {
 
     const state = { name };
@@ -16,6 +19,7 @@ function Project(name) {
             newTodo.tags.addTag(Tag.fromStr(`project:${this.name}`));
             todoList.push(newTodo);
         }
+        pubsub.publish('save', 'projectManagerModule-saveChanges');
         this.getData();
     }
 
@@ -25,6 +29,7 @@ function Project(name) {
         const todoIndex = this.getTodoIndex(ID);
         if (todoIndex != -1)
             todoList.splice(todoIndex, 1);
+        pubsub.publish('save', 'projectManagerModule-saveChanges');
         this.getData();
     }
 
@@ -35,6 +40,7 @@ function Project(name) {
         if (todo !== undefined) {
             Object.assign(todo, edittedTodo);
         }
+        pubsub.publish('save', 'projectManagerModule-saveChanges');
         this.getData();
     }
 
@@ -74,6 +80,9 @@ function Project(name) {
         pubsub.publish('read', 'projectModule-getData', this);
     }
 
+    function getState() {
+        return JSON.stringify({name: this.name, todoList: this.getTodoList()});
+    }
 
     //Filter note by tag
     //Tag module related operation
@@ -105,7 +114,7 @@ function Project(name) {
             //Notes and Projects operations
             moveTodo, duplicateTodo,
             //Data retreival
-            getData,
+            getData, getState,
         }),
         state
     );

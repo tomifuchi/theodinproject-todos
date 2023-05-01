@@ -1,17 +1,19 @@
 ### Notes on this project
 
-Every module will talk to the pubsub module, subscribe to a particular topic then execute with callbackfunction with optional argument passed down by the publisher.
-
+Every module will talk to the pubsub module, subscribe to a particular topic
+then execute with callback function with optional argument(s) passed down by the
+publisher.
 
 ### Modules
 
 ___
 
-These modules are designed to be as polymorphic as possible, that means these modules can be ripped out and use in other projects. We
-can compose these modules together with some modification for specific application
+These modules are designed to be as polymorphic as possible, that means these
+modules can be ripped out and use in other projects. We
+can then compose these modules together with some modification for specific application
 
-Interaction between modules are handled by publish/subscribe module. Via publish with argument and subscribe with arguments
-to listen for state change.
+Interaction between modules are handled by publish/subscribe module. Via publish
+with argument and subscribe with arguments to listen for state change.
 
 Here's a table for brief summary what modules this application have and what does each module does:
 
@@ -20,8 +22,18 @@ Here's a table for brief summary what modules this application have and what doe
 |pubsub.js| Simple implementation of publish/subscribe pattern in a module
 |logger.js| Logger object use to log things.
 |projectManager.js| Single object manages projects
-|project.js| Create Project objects 
+|project.js| Declartion for Project properties, operations to manipulate Todo object
 |display.js| Frontend for application
+
+In the submodule folders
+
+|Name | Belongs to | Purpose|
+|-----|------------|--------|
+|todo.js|project.js| Todo object |
+|tag.js| todo.js| Tagging system for Todo object|
+|domUtils.js| display.js| Various DOM ultilies|
+|form.js| display.js| Handle form for display.js|
+
 
 Below will explain what module does what and how they are designed.
 

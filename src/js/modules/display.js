@@ -202,20 +202,22 @@ function init(projectManager) {
     cachedNodes.projectList.childNodes[0].dispatchEvent(new Event('click'));
     document.getElementById('project-list-add').addEventListener('click', () => {
         console.log('add project');
-        const div = document.createElement('div');
-        const txtBox = document.createElement('input');
-        txtBox.setAttribute('type', 'text');
-        const okButton = document.createElement('button');
-        okButton.textContent = 'Ok';
-        okButton.onclick = () => {
-            const projectName = txtBox.value;
-            pubsub.publish('add', 'add-project', projectManager.createProject(projectName));
-            cachedNodes.projectList.removeChild(cachedNodes.projectList.querySelector('div'));
-        }
-        div.appendChild(txtBox);
-        div.appendChild(okButton);
+        if(cachedNodes.projectList.querySelector('div') == null) {
+            const div = document.createElement('div');
+            const txtBox = document.createElement('input');
+            txtBox.setAttribute('type', 'text');
+            const okButton = document.createElement('button');
+            okButton.textContent = 'Ok';
+            okButton.onclick = () => {
+                const projectName = txtBox.value;
+                pubsub.publish('add', 'add-project', projectManager.createProject(projectName));
+                cachedNodes.projectList.removeChild(cachedNodes.projectList.querySelector('div'));
+            }
+            div.appendChild(txtBox);
+            div.appendChild(okButton);
 
-        cachedNodes.projectList.appendChild(div);
+            cachedNodes.projectList.appendChild(div);
+        }
     });
 }
 
