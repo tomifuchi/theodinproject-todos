@@ -1,8 +1,6 @@
 //Modules
 const pubsub = require('./pubsub');
-const {parse} = require('date-fns');
 //Sub modules
-const {Todo} = require('./sub_modules/project/todo');
 const {Tag} = require('./sub_modules/project/tag');
 
 function Project(name) {
@@ -62,6 +60,7 @@ function Project(name) {
     }
 
     //Interaction with other projects
+    //Implement to frontend later
     function moveTodo(ID, destProject) {
         const todo = this.getTodo(ID);
         todo.tags.removeTag(`project:${this.name}`);
@@ -75,7 +74,7 @@ function Project(name) {
         destProjs.forEach((proj) => proj.addTodo(todo));
     }
 
-    //This is short cut to the pubsub module.
+    //This is to the for display module.
     function getData() {
         pubsub.publish('read', 'projectModule-getData', this);
     }

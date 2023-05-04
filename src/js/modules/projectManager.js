@@ -7,11 +7,11 @@ const projectManager = {
     ID: 0,
     projects: [],
     addProject: function (...projs) {
-        projs.forEach(proj => this.projects.push({ID: this.ID++, project: proj}));
+        projs.forEach(proj => this.projects.push(proj));
         pubsub.publish('save', 'projectManagerModule-saveChanges');
     },
     createProject: function (name) {
-        return Project(name);
+        return {ID: this.ID++, projectData: Project(name)};
     },
     removeProject: function (ID) {
         const removedProject = this.projects.splice(this.getProjectIndex(ID), 1);
@@ -24,13 +24,13 @@ const projectManager = {
         return removedProjects
     },
     getProjectByName: function(name) {
-        return this.projects.filter(project => project.name == name);
+        return this.projects.filter(({projectData}) => projectData.name == name)[0];
     },
-    getProjectById: function (ID) {
-        return this.projects.filter(project => project.ID == ID)[0];
+    getProjectById: function (searchID) {
+        return this.projects.filter(({ID}) => ID == searchID)[0];
     },
-    getProjectIndex: function (ID) {
-        return this.projects.findIndex(project => project.ID == ID);
+    getProjectIndex: function (searchID) {
+        return this.projects.findIndex(({ID}) => ID == searchID);
     },
     getProjectList: function () {
         return this.projects;
@@ -41,9 +41,9 @@ const projectManager = {
         parsedImport.forEach((importProject, index) => {
             console.log(importProject);
             this.addProject(this.createProject(importProject.name));
-            const {project} = this.getProjectById(index);
+            const {projectData} = this.getProjectById(index);
             importProject.todoList.forEach(todo => {
-                project.addTodo(
+                projectData.addTodo(
                     Todo(
                         todo.title,
                         todo.description,
@@ -60,18 +60,26 @@ const projectManager = {
     saveProjects: function (){
         const exportedProjects = [];
         this.projects.forEach(proj => {
-            exportedProjects.push(proj.project.getState());
+            exportedProjects.push(proj.projectData.getState());
         });
         localStorage.setItem('exported-projects', JSON.stringify(exportedProjects));
     },
 };
 
+//Project manager module is listening for changes in any project
+//or any changes made to the project manager that's meaningful
+//then perform a save. Now this is an idea, since we subscribe to react
+//whenever we see changes, and we publish everytime there's a change
+//that would means, instead of saving everything regardless of it's changed or not.
+//We can publish the data that's changed, and we can only save changes and not everything. 
+//This should save the performance. (Not implemented)
 pubsub.subscribe('projectManager', 'save', 'projectManagerModule-saveChanges', saveChanges);
 function saveChanges() {
-    console.log('save Changes!');
+    console.log('Project manager save changes!');
     projectManager.saveProjects();
 }
 
+//For display module
 function getData() {
     pubsub.publish('read', 'projectManagerModule-getData', projectManager.getProjectList());
 }
@@ -83,4 +91,8 @@ pubsub.subscribe('projectManager', 'add', 'add-project', (project) => {
     getData();
 });
 
-module.exports = {projectManager};
+function projectManagerImportTest() {
+    return 'ProjectManager module import successful';
+}
+
+module.exports = {projectManager, projectManagerImportTest};

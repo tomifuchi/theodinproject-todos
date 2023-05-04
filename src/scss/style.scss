@@ -30,7 +30,8 @@ $content-padding: 20px;
 
 header {
     @extend %header-footer-settings;
-    @include flex($direction: row, $align: center);
+    @include flex($direction: column, $align: center);
+    padding: $content-padding;
 
     .logo {
         flex: 1;
@@ -41,12 +42,12 @@ header {
 
     //hambuger button css only
     .mobile-btn {
-        height: 30px;
-        width: 30px;
+        font-family: 'press-start-2p';
         z-index: 3;
         cursor: pointer;
-        border: 1px solid #000;
+        color: black;
         background-color: #fff;
+        padding: 10px;
     }
 
     nav.active {
@@ -96,6 +97,7 @@ main {
     .todos-list-item {
         padding: 10px;
         border: 1px solid #000;
+        width: 100%;
 
         &-ops-list {
             @include flex($direction: column, $align: center);
@@ -108,6 +110,12 @@ main {
         width: 100%;
         padding: 10px;
         border: 1px solid black;
+    }
+
+    button:active {
+        border: 1px solid white;
+        color: white;
+        background-color: black;
     }
 
     .todos-list-item:hover, button:hover {

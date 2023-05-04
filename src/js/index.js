@@ -1,12 +1,32 @@
 /*
     ========================================================================================
     STATUS      TASKS
-    OK    * Every note must have a project tag so we know which project it belongs to.
-    OK    * Every note must have atleast one section tag.
     OKISH * Tagging system
     NOPE  * Search note by content, this feature might takes too long to complete. 
+    OK    * Review source
     INPROGRESS * Front end design
+    INPROGRESS * Finish Readme.md 
     ========================================================================================
+
+    ===============================================
+    Current comment on the project:
+
+    If really look into it, we will
+    see alot of rooms for improvement. But for now
+    the code works this is an MVP not a complete finish
+    product.
+
+    Here're a list of todos that if you do choose to revisit
+    the project then here it is:
+
+    * Review infomation architecture to see if it make sense.
+    * Look at the comments, refined remove clean up the source.
+    * Add moving note, duplicating notes to the frontend
+    * Searching system, search notes using tags or content
+    * Updating and refine tagging system, that is building methods
+    or functions that enable us to filter, search using tags or content.
+
+    ===============================================
 
     Brain storming on how we could go about creating todos
 
@@ -155,6 +175,8 @@ const {Todo} = require('./modules/sub_modules/project/todo');
 const display = require('./modules/display');
 const form = require('./modules/sub_modules/display/form');
 
+const {addDays} = require('date-fns');
+
 
 //Html logger
 const htmlLogger = Logger('htmlLogger');
@@ -170,69 +192,104 @@ pubsub.subscribe('htmlLogger', 'log', 'projectModule-getTodoList', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'removeNote', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'editNote', logToHtml);
 
-function createRandomTodos() {
-    return[
-        Todo(
-            'Note title A', 
-            'random description for A',
-            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-            new Date(1971,12,1), 'dd/MM/yyyy',
-            'normal',
-            ['programming:Javascript', 'functional-programming:Haskell']
-        ),
-        Todo(
-            'Something for B', 
-            'random description for B',
-            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-            new Date(1969,4,3), 'dd/MM/yyyy',
-            'normal',
-            ['programming:C', 'functional-programming:Elixir']
-        ),
-        Todo(
-            'Note title for note C', 
-            'random description for C',
-            'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-            new Date(1953,7,3), 'dd/MM/yyyy',
-            'normal',
-            ['rock-band:guitar', 'learn-music:read-music-sheet']
-        ),
-    ]
-}
-
+//Reload project if exists
 const exportedProjects = localStorage.getItem('exported-projects');
 if(exportedProjects == null) {
-   console.log('none');
-    projectManager.addProject(
-        projectManager.createProject('inbox'), 
-        projectManager.createProject('education'), 
-        projectManager.createProject('programming'), 
-        projectManager.createProject('somethingElse')
-    );
-    projectManager.getProjectList().forEach(({project}) => {
-        createRandomTodos().forEach(todo => project.addTodo(todo))
-    });
+    createPresets();
 }
 else {
     console.log('LOADED!');
     projectManager.reloadProjects(exportedProjects);
 }
-display.init(projectManager);
-/*
-inbox.addTodo(inbox.createNote(
-    'Automaticlly refresh to this shit.', 
-    'random description for D',
-    'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-    new Date(1953,7,3), 'dd/MM/yyyy',
-    'normal',
-    ['rock-band:guitar', 'learn-music:read-music-sheet']
-));
 
-education.addTodo(inbox.createNote(
-    'Automaticlly refresh to this shit.', 
-    'random description for D',
-    'content: Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aperiam fugit assumenda fuga obcaecati non, id laudantium quis necessitatibus dolores animi in quasi iste qui, totam, excepturi ad saepe delectus tempora.',
-    new Date(1953,7,3), 'dd/MM/yyyy',
-    'normal',
-    ['rock-band:guitar', 'learn-music:read-music-sheet']
-));
-*/
+//Presets todos and projects
+function createPresets() {
+    projectManager.addProject(
+        projectManager.createProject('inbox'), 
+        projectManager.createProject('education'), 
+        projectManager.createProject('programming'), 
+    );
+
+    [
+        Todo(
+            'Buy groceries', 
+            'Get Milk, eggs, bread, cheese',
+            'Write a list',
+            new Date(), 'dd/MM/yyyy',
+            'normal',
+            ['shopping:groceries']
+        ),
+        Todo(
+            'Plan vacation', 
+            'Research destination and book flights',
+            'Make a spread sheet',
+            addDays(new Date(), 1), 'dd/MM/yyyy',
+            'normal',
+            ['vacation:hawaii']
+        ),
+        Todo(
+            'Call Mom', 
+            'Check in and talk for 15 minutes',
+            'Write a script',
+            addDays(new Date(), 7), 'dd/MM/yyyy',
+            'normal',
+            ['communication:phone-call', 'family:mom']
+        ),
+    ].forEach(todo => projectManager.getProjectByName('inbox').projectData.addTodo(todo));
+
+    [
+        Todo(
+            'Learn about functional programming', 
+            'Read about functional programming and try to write some code',
+            'Write a script implementing a calculator',
+            addDays(new Date(), 3), 'dd/MM/yyyy',
+            'high',
+            ['programming:functional-programming', 'progrmaming:haskell']
+        ),
+        Todo(
+            'Create a simple webapp', 
+            'Design a simple web app layout and implement it using React',
+            'Write component displaying todolist',
+            addDays(new Date(), 60), 'dd/MM/yyyy',
+            'normal',
+            ['web-development:React', 'javascript:React']
+        ),
+        Todo(
+            'Implement a simple game using game engines',
+            'Choose a game engine (e.g. Unity, Unreal Engine) and implement a simple game',
+            'Write a script to move a player character around and collect coins',
+            addDays(new Date(), 20), 'dd/MM/yyyy',
+            'high',
+            ['game-development:game-engine', 'c#:Unity', 'cpp:Unreal Engine']
+        ),
+    ].forEach(todo => projectManager.getProjectByName('programming').projectData.addTodo(todo));
+
+    [
+        Todo(
+            'Learn about Linear Algebra',
+            'Read about the basics of Linear Algebra and try solving some practice problems',
+            'Write a script to implement a simple linear regression model',
+            new Date(), 'dd/MM/yyyy',
+            'normal',
+            ['education:Linear Algebra', 'math:Linear Algebra']
+        ),
+        Todo(
+            'Learn a new programming language',
+            'Choose a programming language you haven\'t used before and write a simple program',
+            'Write a program to calculate the factorial of a number',
+            addDays(new Date(), 1), 'dd/MM/yyyy',
+            'normal',
+            ['programming-language:Rust']
+        ),
+        Todo(
+            'Study for an upcoming exam',
+            'Create a study schedule for an upcoming exam and review the material',
+            'Write a script to create a study schedule for the exam',
+            addDays(new Date(), 7), 'dd/MM/yyyy',
+            'normal',
+            ['exam:upcoming-exam']
+        ),
+    ].forEach(todo => projectManager.getProjectByName('education').projectData.addTodo(todo));
+}
+
+display.init(projectManager);

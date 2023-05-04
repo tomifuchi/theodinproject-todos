@@ -130,4 +130,3 @@ function createFormElement() {
 function processTags(str) {
     return str.split(' ');
 }
-

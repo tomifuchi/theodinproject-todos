@@ -86,7 +86,7 @@ function render(obj) {
     clearNodeChilds(cachedNodes.formSection);
     clearNodeChilds(cachedNodes.todosListContainer);
     addToElem(cachedNodes.todosListContainer, 
-        bindNoteListElem(obj, createTodoListElem(obj.getTodoList())),
+        bindTodoListElem(obj, createTodoListElem(obj.getTodoList())),
         createProjectOperations(obj),
     );
 }
@@ -161,7 +161,7 @@ function createTodoListElem (noteList) {
     return ul;
 }
 
-function bindNoteListElem(obj, ul) {
+function bindTodoListElem(obj, ul) {
     const ulArr = [...ul.childNodes];
     (obj.getTodoList()).forEach((todo,i) => {
         ulArr[i].querySelector('button[data-del-btn]').addEventListener('click', () => {
@@ -222,12 +222,12 @@ function init(projectManager) {
 }
 
 function createProjectListItem(projectList) {
-    projectList.forEach(({project}, i) => {
+    projectList.forEach(({projectData}, i) => {
         const li = document.createElement('li');
-        li.textContent = project.name;
+        li.textContent = projectData.name;
         li.classList.add('project-list-item');
         li.addEventListener('click', () => {
-            pubsub.publish('read-request', `${project.name}-project-read-request`);
+            pubsub.publish('read-request', `${projectData.name}-project-read-request`);
         });
         cachedNodes.projectList.appendChild(li);
     });
