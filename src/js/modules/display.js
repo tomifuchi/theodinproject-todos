@@ -94,8 +94,6 @@ function renderProjList(projectList) {
     clearNodeChilds(cachedNodes.projectList);
     createProjectListItem(projectList);
 }
-pubsub.subscribe('display','read', 'projectModule-getData', render);
-pubsub.subscribe('display', 'read', 'projectManagerModule-getData', renderProjList);
 
 
 //Note list in a project
@@ -129,9 +127,9 @@ function createTodoListItemElem(todo) {
     });
     todo_item.appendChild(tagList);
 
-    const noteStatus = document.createElement('p');
-    noteStatus.textContent = todo.noteStatus;
-    todo_item.appendChild(noteStatus);
+    const todoStatus = document.createElement('p');
+    todoStatus.textContent = todo.todoStatus;
+    todo_item.appendChild(todoStatus);
 
     const todoOpsList = document.createElement('ul');
     todoOpsList.setAttribute('class', 'todos-list-item-ops-list');
@@ -173,7 +171,7 @@ function bindTodoListElem(obj, ul) {
             it should create a new note the passed it in here. to the edit note function
             of the project.
             */
-            pubsub.publish('change', 'edit-form', {obj, todo, target: ulArr[i]});
+            pubsub.publish('change', 'formModule-edit-form', {obj, todo, target: ulArr[i]});
         })
 
     })
@@ -190,35 +188,67 @@ function createProjectOperations(obj) {
          it should create a new note the passed it in here. to the edit note function
          of the project. samething here too
          */
-        pubsub.publish('create', 'create-form', {obj, target: cachedNodes.formSection});
+        pubsub.publish('create', 'formModule-create-form', {obj, target: cachedNodes.formSection});
     });
     return addNoteBtn;
 }
 
 function init(projectManager) {
+    //Project list item
     createProjectListItem(projectManager.getProjectList());
 
-    console.log(cachedNodes.projectList.childNodes[0]);
+    //Default click to first item
     cachedNodes.projectList.childNodes[0].dispatchEvent(new Event('click'));
+
+    //Add project button event
     document.getElementById('project-list-add').addEventListener('click', () => {
-        console.log('add project');
+        //If already existed, don't create
         if(cachedNodes.projectList.querySelector('div') == null) {
+            //Text box with ok and cancel button. Takes project name
             const div = document.createElement('div');
             const txtBox = document.createElement('input');
             txtBox.setAttribute('type', 'text');
+            div.appendChild(txtBox);
+
             const okButton = document.createElement('button');
             okButton.textContent = 'Ok';
             okButton.onclick = () => {
                 const projectName = txtBox.value;
-                pubsub.publish('add', 'add-project', projectManager.createProject(projectName));
+                if(projectName !== '') {
+                    pubsub.publish('add', 'add-project', projectManager.createProject(projectName));
+                    cachedNodes.projectList.removeChild(cachedNodes.projectList.querySelector('div'));
+                }
+            }
+            div.appendChild(okButton);
+
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.onclick = () => {
                 cachedNodes.projectList.removeChild(cachedNodes.projectList.querySelector('div'));
             }
-            div.appendChild(txtBox);
-            div.appendChild(okButton);
+            div.appendChild(cancelButton);
 
             cachedNodes.projectList.appendChild(div);
         }
     });
+
+    //Render to changes made
+    //Individual project
+    pubsub.subscribe('display','change', 'projectModule-addTodo', render);
+    pubsub.subscribe('display','change', 'projectModule-removeTodo', render);
+    pubsub.subscribe('display','change', 'projectModule-editTodo', render);
+    //Project Managaer
+    pubsub.subscribe('display', 'change', 'projectManagerModule-addProject', renderProjList);
+    pubsub.subscribe('display', 'change', 'projectManagerModule-removeProject', renderProjList);
+    pubsub.subscribe('display', 'change', 'projectManagerModule-clearProjectList', renderProjList);
+    //For displaying a project in the projectList
+    //When pressed an item, it will send a read request
+    //then the project is going to publish project data to 
+    //display-render-project subscribed here
+    pubsub.subscribe('display', 'read', 'display-render-project', render);
+
+    renderProjList(projectManager.getProjectList());
+    render(projectManager.getProjectById(0).projectData);
 }
 
 function createProjectListItem(projectList) {
@@ -227,11 +257,10 @@ function createProjectListItem(projectList) {
         li.textContent = projectData.name;
         li.classList.add('project-list-item');
         li.addEventListener('click', () => {
-            pubsub.publish('read-request', `${projectData.name}-project-read-request`);
+            pubsub.publish('display-read-request', `${projectData.name}-project-read-request`);
         });
         cachedNodes.projectList.appendChild(li);
     });
-
 }
 
 module.exports = {init};

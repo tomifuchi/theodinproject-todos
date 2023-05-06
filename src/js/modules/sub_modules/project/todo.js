@@ -1,9 +1,7 @@
-const pubsub = require('../../pubsub');
 const {format} = require('date-fns');
 const {Tag, TagList} = require('./tag');
 
-function Todo (title, description, content, dueDate, dueDateformat='dd/MM/yyyy', priority, tags) { 
-    pubsub.publish('log','todoModule-Todo', `${this.name} todo.js:Todo invoke`);
+function Todo (title, description, content, dueDate, dueDateformat='dd/MM/yyyy', priority, tags, todoStatus='unfinished') { 
     const state = {
         title, 
         description, 
@@ -11,7 +9,7 @@ function Todo (title, description, content, dueDate, dueDateformat='dd/MM/yyyy',
         dueDate: format(dueDate,  dueDateformat), 
         priority, 
         tags: TagList('default-name'), 
-        todoStatus: 'unfinished',
+        todoStatus
     };
     state.tags.addTag(...tags.map(tag => Tag.fromStr(tag)));
 

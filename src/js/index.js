@@ -1,11 +1,12 @@
 /*
     ========================================================================================
     STATUS      TASKS
-    OKISH * Tagging system
-    NOPE  * Search note by content, this feature might takes too long to complete. 
+    UNFISNISHED * Tagging system
+    UNFINISHED * Search note by content, this feature might takes too long to complete. 
     OK    * Review source
-    INPROGRESS * Front end design
-    INPROGRESS * Finish Readme.md 
+    OK * Front end design (Mobile)
+    INPROGRESS * Front end design (Desktop)
+    OK * Finish Readme.md 
     ========================================================================================
 
     ===============================================
@@ -47,32 +48,15 @@
 
     * UI is up to me
 
-
-    * What can it do ?
-        1 view all projects
-        2 view all todos in each project (probably just the title and duedate… perhaps changing color for different priorities)
-        3 expand a single todo to see/edit its details
-        4 delete a todo
-
-    Use local storage to persists data when reload, and can reload save file aswel. Try diving in see
-    what happens.
-
-    Very simple interface and foundation work can be work on right now
-    my todo's revolves around tagging things to categorize things. And ofcourse that's a feature to implement
-    later. NOw should be laying foundation that we can do this
-
-    Let's create a working prototype for this to work without display then design the UI and shit later.
-    It can change but the logic will not.
-
     Note:
         + Somesort of project managers: it can do usual shit like C.R.E.D
         + Duedate can be days or time from now. like after 2 days or some shit.
         + Local storage
-
-
     Notes and checklist if possible
 
-    **Tagging system
+*/
+/*
+    **Tagging system Brain storm
     
     //Let's say note#0 and note#1, note 2 in a project education
     note0 = {
@@ -104,8 +88,6 @@
         tags: ['project:education', 'section:mathematics', 'anything:linear-algebra'],
         noteStatus: 'unfinished',
     };
-
-
 
     //Then a tagRecord in the database might look like this
     const tagRecord = {
@@ -144,7 +126,6 @@
     This is gauranteed, we can search for any note using any methods, proejcts, section or anything.
     If they're untagged, just type anthing:untagged
     
-
     * Taggin syntax is identifer:topic
     * Requirement tags are automatically created with a note creation by adding project:${project-name} and section:${section-name},
     if project is not created it will be default-project, if section is not created a default-section will be used. 
@@ -160,6 +141,8 @@
     let's think simple first, typing identifier:topic chain this together to nail down
     the search. That's it.
 */
+
+//Mobile menu btn
 document.getElementsByClassName('mobile-btn')[0].onclick = () => {
     document.getElementsByTagName('nav')[0].classList.toggle('active');
     document.body.classList.toggle('fixed');
@@ -192,7 +175,7 @@ pubsub.subscribe('htmlLogger', 'log', 'projectModule-getTodoList', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'removeNote', logToHtml);
 //pubsub.subscribe('htmlLogger', 'log', 'editNote', logToHtml);
 
-//Reload project if exists
+//Reload project if exists if not use presets
 const exportedProjects = localStorage.getItem('exported-projects');
 if(exportedProjects == null) {
     createPresets();
@@ -292,4 +275,5 @@ function createPresets() {
     ].forEach(todo => projectManager.getProjectByName('education').projectData.addTodo(todo));
 }
 
+//Populates the display
 display.init(projectManager);

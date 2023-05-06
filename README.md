@@ -1,8 +1,8 @@
 ### Notes on this project
 
-Every module will talk to the pubsub module, subscribe to a particular topic
-then execute with callback function with optional argument(s) passed down by the
-publisher.
+Very simple and crude implementation of todo app, alot of rooms for imporvement. Alot of experiences and lessons took from this application.
+
+With a little bit more time put into this, and a beautiful UI this can be a very good application.
 
 ### Modules
 
@@ -25,7 +25,7 @@ Here's a table for brief summary what modules this application have and what doe
 |project.js| Declartion for Project properties, operations to manipulate Todo object
 |display.js| Frontend for application
 
-In the submodule folders
+In the submodule folder
 
 |Name | Belongs to | Purpose|
 |-----|------------|--------|
@@ -63,6 +63,25 @@ anything larger than that require different pattern, Also not addressing the
 security or error checking here. Read more here
 
 [Wikipedia on publish subscribe pattern](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern)
+
+Normally the implementation only have a callback to be then invoke when 
+something published, and have other elements subscribe to it. In my implementation, we can optionally passed parameters when we publish, we can then design subscribers callback to take in such parameters. This allows modules to pass data. (This might or might not be a good idea)
+
+### **display.js**
+Responsible for rendering, displaying the current state of 
+projectManager object and projects/todos. The application will
+still work as intended even if display.js is not there. Logs should
+be inserted for this style to works.
+
+### **todo.js**
+Atom of the whole application, todo.js is the declaration of the todo object. Along with tag.js is part of todo.js
+
+### **project.js**
+A project that manages Todos, it can edit, copy, delete. Duplicate to
+other projects, move todos around to other projects.
+
+### **projectManager.js**
+Manges Project objects. It detect changes made to projects, todos, and itself, then automatically save when there're changes made.
 
 **Front end UI**:
 

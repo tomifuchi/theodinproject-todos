@@ -8,19 +8,19 @@ const projectManager = {
     projects: [],
     addProject: function (...projs) {
         projs.forEach(proj => this.projects.push(proj));
-        pubsub.publish('save', 'projectManagerModule-saveChanges');
+        pubsub.publish('change', 'projectManagerModule-addProject');
     },
     createProject: function (name) {
         return {ID: this.ID++, projectData: Project(name)};
     },
     removeProject: function (ID) {
         const removedProject = this.projects.splice(this.getProjectIndex(ID), 1);
-        pubsub.publish('save', 'projectManagerModule-saveChanges');
+        pubsub.publish('change', 'projectManagerModule-removeProject');
         return removedProject;
     },
     clearProjectList: function () {
         const removedProjects = this.projects.splice(0, this.projects.length);
-        pubsub.publish('save', 'projectManagerModule-saveChanges');
+        pubsub.publish('change', 'projectManagerModule-clearProjectList');
         return removedProjects
     },
     getProjectByName: function(name) {
@@ -37,9 +37,7 @@ const projectManager = {
     },
     reloadProjects: function(importedProjects) {
         const parsedImport = (JSON.parse(importedProjects)).map(project => JSON.parse(project));
-        console.log(parsedImport);
         parsedImport.forEach((importProject, index) => {
-            console.log(importProject);
             this.addProject(this.createProject(importProject.name));
             const {projectData} = this.getProjectById(index);
             importProject.todoList.forEach(todo => {
@@ -59,8 +57,10 @@ const projectManager = {
     },
     saveProjects: function (){
         const exportedProjects = [];
-        this.projects.forEach(proj => {
-            exportedProjects.push(proj.projectData.getState());
+        this.projects.forEach(({projectData}) => {
+            exportedProjects.push(
+                JSON.stringify({name: projectData.name, todoList: projectData.getTodoList()})
+            )
         });
         localStorage.setItem('exported-projects', JSON.stringify(exportedProjects));
     },
@@ -73,23 +73,21 @@ const projectManager = {
 //that would means, instead of saving everything regardless of it's changed or not.
 //We can publish the data that's changed, and we can only save changes and not everything. 
 //This should save the performance. (Not implemented)
-pubsub.subscribe('projectManager', 'save', 'projectManagerModule-saveChanges', saveChanges);
+
+//When should you save ?
+//Changes made to project Manager
+pubsub.subscribe('projectManager', 'change', 'projectManagerModule-addProject', saveChanges);
+pubsub.subscribe('projectManager', 'change', 'projectManagerModule-removeProject', saveChanges);
+pubsub.subscribe('projectManager', 'change', 'projectManagerModule-clearProjectList', saveChanges);
+
+//Changes made to individual project
+pubsub.subscribe('projectManager', 'change', 'projectModule-addTodo', saveChanges)
+pubsub.subscribe('projectManager', 'change', 'projectModule-removeTodo', saveChanges)
+pubsub.subscribe('projectManager', 'change', 'projectModule-editTodo', saveChanges)
 function saveChanges() {
-    console.log('Project manager save changes!');
     projectManager.saveProjects();
 }
 
-//For display module
-function getData() {
-    pubsub.publish('read', 'projectManagerModule-getData', projectManager.getProjectList());
-}
-
-pubsub.subscribe('projectManager', 'add', 'add-project', (project) => {
-    console.log('read-projectList-received');
-    projectManager.addProject(project);
-    console.log(projectManager.getProjectList());
-    getData();
-});
 
 function projectManagerImportTest() {
     return 'ProjectManager module import successful';

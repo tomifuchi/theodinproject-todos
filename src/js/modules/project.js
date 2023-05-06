@@ -16,19 +16,18 @@ function Project(name) {
             const newTodo = { ...todo, ID: ID++ };
             newTodo.tags.addTag(Tag.fromStr(`project:${this.name}`));
             todoList.push(newTodo);
+            pubsub.publish('change', 'projectModule-addTodo', this); //Emit changes
         }
-        pubsub.publish('save', 'projectManagerModule-saveChanges');
-        this.getData();
     }
 
     //Removing
     function removeTodo(ID) {
         pubsub.publish('log', 'projectModule-removeTodo', `${this.name} project; project.js:removeTodo invoke`);
         const todoIndex = this.getTodoIndex(ID);
-        if (todoIndex != -1)
+        if (todoIndex != -1){
             todoList.splice(todoIndex, 1);
-        pubsub.publish('save', 'projectManagerModule-saveChanges');
-        this.getData();
+            pubsub.publish('change', 'projectModule-removeTodo', this);
+        }
     }
 
     //Editting
@@ -37,9 +36,8 @@ function Project(name) {
         const todo = this.getTodo(ID);
         if (todo !== undefined) {
             Object.assign(todo, edittedTodo);
+            pubsub.publish('change', 'projectModule-editTodo', this);
         }
-        pubsub.publish('save', 'projectManagerModule-saveChanges');
-        this.getData();
     }
 
     //Reading
@@ -74,13 +72,8 @@ function Project(name) {
         destProjs.forEach((proj) => proj.addTodo(todo));
     }
 
-    //This is to the for display module.
     function getData() {
-        pubsub.publish('read', 'projectModule-getData', this);
-    }
-
-    function getState() {
-        return JSON.stringify({name: this.name, todoList: this.getTodoList()});
+        return this;
     }
 
     //Filter note by tag
@@ -113,11 +106,14 @@ function Project(name) {
             //Notes and Projects operations
             moveTodo, duplicateTodo,
             //Data retreival
-            getData, getState,
+            getData,
         }),
         state
     );
-    pubsub.subscribe(`${project.name}-project`, 'read-request', `${project.name}-project-read-request`, () => { console.log('read-request-received'); console.log(project); project.getData() });
+    pubsub.subscribe(`${project.name}-project`, 'display-read-request', `${project.name}-project-read-request`, 
+    () => {
+        pubsub.publish('read', 'display-render-project', project.getData());
+    });
 
     return project;
 }

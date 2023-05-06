@@ -3,8 +3,8 @@ const pubsub = require('../../pubsub');
 const {clearNodeChilds, queryPropVal, queryProp} = require('./domUtil');
 const {Todo} = require('../project/todo');
 
-pubsub.subscribe('form', 'change', 'edit-form', editTodoFromForm);
-pubsub.subscribe('form', 'create', 'create-form', createTodoFromForm);
+pubsub.subscribe('form', 'change', 'formModule-edit-form', editTodoFromForm);
+pubsub.subscribe('form', 'create', 'formModule-create-form', createTodoFromForm);
 
 function editTodoFromForm({obj, todo, target}) {
     clearNodeChilds(target);
@@ -21,11 +21,12 @@ function editTodoFromForm({obj, todo, target}) {
 }
 
 function parseForm(form) {
-    const q = queryPropVal(form);
+    const qv = queryPropVal(form);
+    const qp = queryProp(form);
     return Todo(
-        q('#title'),
-        q('#description'),
-        q('#content'),
+        qv('#title'),
+        qv('#description'),
+        qv('#content'),
         /*
             Parsing date from form
             https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
@@ -36,10 +37,11 @@ function parseForm(form) {
             the displayed date is formatted based on the locale of the user's browser, 
             but the parsed value is always formatted yyyy-mm-dd.
         */
-        Date.parse(q('#due-date')),
+        Date.parse(qv('#due-date')),
         'dd/MM/yyyy',
-        q('#priority'),
-        processTags(q('#tags'))
+        qv('#priority'),
+        processTags(qv('#tags')),
+        (qp('#finished').checked ? 'finished':'unfinshed')
     );
 }
 
@@ -52,6 +54,9 @@ function parseTodo(form, todo) {
     q('#due-date').value = format(parse(todo.dueDate, 'dd/MM/yyyy', new Date()),'yyyy-MM-dd');
     q('#priority').value = todo.priority;
     q('#tags').value = todo.tags.getTagList().map(tag => tag.getAsStr()).join(' ');
+    if(todo.todoStatus == 'finished') {
+        q('#finished').setAttribute('checked', '');
+    }
 
     return form;
 }

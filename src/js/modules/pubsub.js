@@ -20,8 +20,13 @@ function publish(type, message, args) {
     subscribers.filter(sub => sub.type == type && sub.message == message).forEach(item => item.callBackFunction(args));
 }
 
+//Debugs only delete later
+function echoSub() {
+    return subscribers;
+}
+
 function pubsubTest() {
     return 'Pubsub module import successful';
 }
 
-module.exports = {subscribe, unsubscribe, publish, pubsubTest};
+module.exports = {subscribe, unsubscribe, publish, echoSub, pubsubTest};

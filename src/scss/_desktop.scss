@@ -1,0 +1,20 @@
+@media screen and (min-width: 1000px) {
+
+header {
+
+    //hambuger button css only
+    .mobile-btn {
+        font-family: 'press-start-2p';
+        z-index: 3;
+        cursor: pointer;
+        color: black;
+        background-color: #fff;
+        padding: 10px;
+    }
+
+    nav {
+        position: static;
+    }
+}
+
+}

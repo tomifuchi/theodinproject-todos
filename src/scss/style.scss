@@ -1,5 +1,6 @@
 @use "sass:list";
 @import 'base';
+@import 'desktop';
 
 body {
     @extend %reset-margin-padding;
