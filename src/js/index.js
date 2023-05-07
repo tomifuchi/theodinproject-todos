@@ -5,7 +5,7 @@
     UNFINISHED * Search note by content, this feature might takes too long to complete. 
     OK * Review source
     OK * Front end design (Mobile)
-    INPROGRESS * Front end design (Desktop)
+    OK * Front end design (Desktop)
     OK * Finish Readme.md 
     ========================================================================================
 
