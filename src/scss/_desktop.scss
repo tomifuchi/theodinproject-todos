@@ -1,20 +1,31 @@
-@media screen and (min-width: 1000px) {
-
-header {
-
-    //hambuger button css only
-    .mobile-btn {
-        font-family: 'press-start-2p';
-        z-index: 3;
-        cursor: pointer;
-        color: black;
-        background-color: #fff;
-        padding: 10px;
+@media (min-width: 1200px) {
+    body {
+        @include grid($column: min(420px, 30%) 1fr, $row: minmax(100vh, 1fr) auto);
+        @include defineGridArea(
+            (
+                'header': header,
+                'main': main,
+                'footer': footer
+            )
+        );
+        grid-template-areas: 
+            'header main'
+            'footer footer'
+        ;
     }
 
-    nav {
-        position: static;
-    }
-}
+    header {
+        gap: 30px;
+        //hambuger button css only
+        .mobile-btn {
+            display: none;
+        }
 
+        nav {
+            position: static;
+            @include flex($direction: column, $align: center, $justify: flex-start);
+            transform: translateX(0);
+            z-index: 0;
+        }
+    }
 }

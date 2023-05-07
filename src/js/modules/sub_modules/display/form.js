@@ -1,32 +1,38 @@
 const {format, parse} = require('date-fns');
 const pubsub = require('../../pubsub');
-const {clearNodeChilds, queryPropVal, queryProp} = require('./domUtil');
+const {
+    //Creation
+    c, tc, sa, ap, cea,
+    //Clearing
+    clc,
+    //Querying
+    qc, qcf,
+} = require('./domUtil');
 const {Todo} = require('../project/todo');
 
 pubsub.subscribe('form', 'change', 'formModule-edit-form', editTodoFromForm);
 pubsub.subscribe('form', 'create', 'formModule-create-form', createTodoFromForm);
 
 function editTodoFromForm({obj, todo, target}) {
-    clearNodeChilds(target);
+    clc(target);
     const form = createFormElement();
     parseTodo(form, todo);
-    form.querySelector('#create-todo-btn').textContent = 'Edit todo';
-    form.querySelector('#create-todo-btn').addEventListener('click', () => {
+    tc(qc(form, '#create-todo-btn'), 'Edit todo');
+    qc(form,'#create-todo-btn').addEventListener('click', () => {
         if(form.reportValidity()){
             const newTodo = parseForm(form);
             obj.editTodo({ID: todo.ID, ...newTodo});
         }
     });
-    target.appendChild(form);
+    ap(target, form);
 }
 
 function parseForm(form) {
-    const qv = queryPropVal(form);
-    const qp = queryProp(form);
+    const q = qcf(form)
     return Todo(
-        qv('#title'),
-        qv('#description'),
-        qv('#content'),
+        q('#title').value,
+        q('#description').value,
+        q('#content').value,
         /*
             Parsing date from form
             https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
@@ -37,25 +43,30 @@ function parseForm(form) {
             the displayed date is formatted based on the locale of the user's browser, 
             but the parsed value is always formatted yyyy-mm-dd.
         */
-        Date.parse(qv('#due-date')),
+        Date.parse(q('#due-date').value),
         'dd/MM/yyyy',
-        qv('#priority'),
-        processTags(qv('#tags')),
-        (qp('#finished').checked ? 'finished':'unfinshed')
+        q('#priority').value,
+        processTags(q('#tags').value),
+        (q('#finished').checked ? 'finished':'unfinshed')
     );
 }
 
 function parseTodo(form, todo) {
-    const q = queryProp(form);
+    const q = qcf(form);
     
-    q('#title').value = todo.title;
-    q('#description').value = todo.description;
+    sa(q('#title'), 'value', todo.title);
+    sa(q('#description'), 'value', todo.description);
+    //Why set attribute here doesn't work ?
+    //This down here equates to
+    //form.querySelector('#content').setAttribute('value', todo.content)
+    //sa(q('#content'), 'value', todo.content);
+    //But the below works ?
     q('#content').value = todo.content;
-    q('#due-date').value = format(parse(todo.dueDate, 'dd/MM/yyyy', new Date()),'yyyy-MM-dd');
-    q('#priority').value = todo.priority;
-    q('#tags').value = todo.tags.getTagList().map(tag => tag.getAsStr()).join(' ');
+    sa(q('#due-date'), 'value', format(parse(todo.dueDate, 'dd/MM/yyyy', new Date()),'yyyy-MM-dd'));
+    sa(q('#priority'), 'value', todo.priority);
+    sa(q('#tags'), 'value', todo.tags.getTagList().map(tag => tag.getAsStr()).join(' '));
     if(todo.todoStatus == 'finished') {
-        q('#finished').setAttribute('checked', '');
+        sa(q('#finished'), 'checked', '');
     }
 
     return form;
@@ -68,26 +79,14 @@ function createTodoFromForm({obj, target}) {
             if(form.reportValidity()){
                 const newTodo = parseForm(form);
                 obj.addTodo(newTodo);
-                clearNodeChilds(target);
+                clc(target);
             }
         });
-        target.appendChild(form);
+        ap(target, form);
     }
 }
 
 function createFormElement() {
-    const c = (elm) => document.createElement(elm);
-    const tc = (target, val) => {target.textContent = val; return target};
-    const sa = (target, attrib, val) => {target.setAttribute(attrib, val); return target};
-    const ap = (target, ...objs) => {objs.forEach(obj => target.appendChild(obj)); return target};
-
-    function cea(elm, attrib) {
-        const i = c(elm);
-        for(prop in attrib) {
-            sa(i, prop, attrib[prop]);
-        }
-        return i;
-    }
 
     const form = ap(cea('form', {action:"", method:"post" ,id:"create-todo-form"}),
         tc(c('h2'), 'todo creation'),
@@ -127,7 +126,7 @@ function createFormElement() {
                 tc(cea('button', {type:"button", id:"create-todo-btn"}), 'Add todo'))
         )
     );
-    form.querySelector('#due-date').min = new Date().toISOString().split("T")[0];
+    sa(qc(form, '#due-date'), 'min', new Date().toISOString().split("T")[0]);
 
     return form;
 }

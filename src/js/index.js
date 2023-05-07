@@ -3,7 +3,7 @@
     STATUS      TASKS
     UNFISNISHED * Tagging system
     UNFINISHED * Search note by content, this feature might takes too long to complete. 
-    OK    * Review source
+    OK * Review source
     OK * Front end design (Mobile)
     INPROGRESS * Front end design (Desktop)
     OK * Finish Readme.md 
@@ -26,6 +26,8 @@
     * Searching system, search notes using tags or content
     * Updating and refine tagging system, that is building methods
     or functions that enable us to filter, search using tags or content.
+    * Check for project name to not contain spaces and not longer than something
+    characters is good !
 
     ===============================================
 
@@ -181,7 +183,6 @@ if(exportedProjects == null) {
     createPresets();
 }
 else {
-    console.log('LOADED!');
     projectManager.reloadProjects(exportedProjects);
 }
 

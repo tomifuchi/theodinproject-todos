@@ -1,18 +1,19 @@
 const pubsub = require("./pubsub");
+const {
+    //Creation
+    c, ap, tc, sa,
+    //Clearing
+    clc,
+} = require('./sub_modules/display/domUtil');
 
 //Submodules
 require('./sub_modules/display/form');
-const {clearNodeChilds, addToElem} = require('./sub_modules/display/domUtil');
 
 const cachedNodes = {
     curentTitle: document.getElementById('current-project-title'),
     projectList: document.getElementById('project-list'),
     todosListContainer: document.getElementById('todos-list-container'),
     formSection: document.getElementById('form-section'),
-}
-
-function updateTextContent(node, data){
-    node.textContent = data;
 }
 
 function applyClass(node, styleClass) {
@@ -31,7 +32,7 @@ note is invoked should we wanted to read the log subscribe to these channel
 //Logging
 const htmlLoggerContainer = document.getElementById('log');
 function renderHtmlLogger(msg) {
-    updateTextContent(htmlLoggerContainer, msg);
+    tc(htmlLoggerContainer, msg);
 }
 pubsub.subscribe('display','log','htmlLogger-logs', renderHtmlLogger);
 
@@ -78,20 +79,17 @@ pubsub.subscribe('display','log','htmlLogger-logs', renderHtmlLogger);
 */
 
 function render(obj) {
-    //console.log('render received:', obj);
-    //console.log(obj.getTodoList());
-    updateTextContent(cachedNodes.curentTitle, `Project/${obj.name}`);
-    //applyClass(obj.listItem, 'active');
+    tc(cachedNodes.curentTitle, `Project/${obj.name}`);
 
-    clearNodeChilds(cachedNodes.formSection);
-    clearNodeChilds(cachedNodes.todosListContainer);
-    addToElem(cachedNodes.todosListContainer, 
+    clc(cachedNodes.formSection);
+    clc(cachedNodes.todosListContainer);
+    ap(cachedNodes.todosListContainer, 
         bindTodoListElem(obj, createTodoListElem(obj.getTodoList())),
         createProjectOperations(obj),
     );
 }
 function renderProjList(projectList) {
-    clearNodeChilds(cachedNodes.projectList);
+    clc(cachedNodes.projectList);
     createProjectListItem(projectList);
 }
 
@@ -99,62 +97,62 @@ function renderProjList(projectList) {
 //Note list in a project
 function createTodoListItemElem(todo) {
     const todo_item = document.createElement('li');
-    todo_item.classList.add('todos-list-item');
+    applyClass(todo_item, 'todos-list-item');
 
     const title = document.createElement('h3'); 
-    title.textContent = todo.title;
-    todo_item.appendChild(title);
+    tc(title, todo.title);
+    ap(todo_item, title);
 
     const description = document.createElement('h4');
-    description.textContent = todo.description;
-    todo_item.appendChild(description);
+    tc(description, todo.description);
+    ap(todo_item, description);
 
     const content = document.createElement('p');
-    content.textContent = todo.content;
-    todo_item.appendChild(content);
+    tc(content, todo.content);
+    ap(todo_item, content)
 
     const dueDate = document.createElement('p');
-    dueDate.textContent = todo.dueDate;
-    todo_item.appendChild(dueDate);
+    tc(dueDate, todo.dueDate);
+    ap(todo_item, dueDate);
 
-    todo_item.classList.add((todo.priority == 'normal' ? 'normal':'urgent'));
+    applyClass(todo_item, (todo.priority == 'normal' ? 'normal':'urgent'))
 
     const tagList = document.createElement('ul');
     todo.tags.getTagList().forEach(tag => {
-        const tagListItem = document.createElement('li');
-        tagListItem.appendChild(document.createTextNode(tag.getAsStr()));
-        tagList.appendChild(tagListItem);
+        const tagListItem = c('li');
+        ap(tagListItem, document.createTextNode(tag.getAsStr()));
+        ap(tagList, tagListItem);
     });
-    todo_item.appendChild(tagList);
+    ap(todo_item, tagList);
 
-    const todoStatus = document.createElement('p');
-    todoStatus.textContent = todo.todoStatus;
-    todo_item.appendChild(todoStatus);
+    const todoStatus = c('p');
+    tc(todoStatus, todo.todoStatus);
+    ap(todo_item, todoStatus);
 
-    const todoOpsList = document.createElement('ul');
-    todoOpsList.setAttribute('class', 'todos-list-item-ops-list');
+    const todoOpsList = c('ul');
+    applyClass(todoOpsList, 'todos-list-item-ops-list');
 
-    const delButton = document.createElement('button');
-    delButton.textContent = 'Delete note';
-    delButton.setAttribute('data-del-btn', '');
-    todoOpsList.appendChild(document.createElement('li').appendChild(delButton));
+    const delButton = c('button');
+    tc(delButton, 'Delete note');
+    sa(delButton, 'data-del-btn', '');
+    ap(todoOpsList, ap(c('li'), delButton));
 
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Edit note';
-    editButton.setAttribute('data-edit-btn', '');
-    todoOpsList.appendChild(document.createElement('li').appendChild(editButton));
+    const editButton = c('button');
+    tc(editButton, 'Edit note');
+    sa(editButton, 'data-edit-btn', '');
+    ap(todoOpsList, ap(c('li'), editButton));
 
-    todo_item.appendChild(todoOpsList);
+    ap(todo_item, todoOpsList);
 
     return todo_item;
 }
 
 //If changes made then renders the list.
 function createTodoListElem (noteList) {
-    const ul = document.createElement('ul');
-    ul.setAttribute('id', 'todos-list');
+    const ul = c('ul');
+    sa(ul, 'id', 'todos-list');
     noteList.forEach(note => {
-        ul.appendChild(createTodoListItemElem(note));
+        ap(ul, createTodoListItemElem(note));
     })
     return ul;
 }
@@ -180,8 +178,8 @@ function bindTodoListElem(obj, ul) {
 
 
 function createProjectOperations(obj) {
-    const addNoteBtn = document.createElement('button');
-    addNoteBtn.textContent = 'Add note +';
+    const addNoteBtn = c('button');
+    tc(addNoteBtn, 'Add note +');
     addNoteBtn.addEventListener('click', () => {
          /* Pops up the form with info in that note already in the fields
          so if you need to change somehting, you just write it up here and press create
@@ -205,28 +203,28 @@ function init(projectManager) {
         //If already existed, don't create
         if(cachedNodes.projectList.querySelector('div') == null) {
             //Text box with ok and cancel button. Takes project name
-            const div = document.createElement('div');
-            const txtBox = document.createElement('input');
-            txtBox.setAttribute('type', 'text');
-            div.appendChild(txtBox);
+            const div = c('div');
+            const txtBox = c('input');
+            sa(txtBox, 'type', 'text');
+            ap(div, txtBox);
 
-            const okButton = document.createElement('button');
-            okButton.textContent = 'Ok';
+            const okButton = c('button');
+            tc(okButton, 'Ok');
             okButton.onclick = () => {
                 const projectName = txtBox.value;
                 if(projectName !== '') {
-                    pubsub.publish('add', 'add-project', projectManager.createProject(projectName));
+                    pubsub.publish('add', 'projectManagerModule-addProject', projectName);
                     cachedNodes.projectList.removeChild(cachedNodes.projectList.querySelector('div'));
                 }
             }
-            div.appendChild(okButton);
+            ap(div, okButton);
 
-            const cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
+            const cancelButton = c('button');
+            tc(cancelButton, 'Cancel');
             cancelButton.onclick = () => {
                 cachedNodes.projectList.removeChild(cachedNodes.projectList.querySelector('div'));
             }
-            div.appendChild(cancelButton);
+            ap(div, cancelButton);
 
             cachedNodes.projectList.appendChild(div);
         }
@@ -253,9 +251,9 @@ function init(projectManager) {
 
 function createProjectListItem(projectList) {
     projectList.forEach(({projectData}, i) => {
-        const li = document.createElement('li');
-        li.textContent = projectData.name;
-        li.classList.add('project-list-item');
+        const li = c('li');
+        tc(li, projectData.name);
+        applyClass(li, 'project-list-item');
         li.addEventListener('click', () => {
             pubsub.publish('display-read-request', `${projectData.name}-project-read-request`);
         });
